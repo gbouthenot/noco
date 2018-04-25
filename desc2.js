@@ -75,18 +75,17 @@ function headers () {
   .icn, .ban { display:inline; }
   .icn img, .ban img { width:10em;}
 
-  #mos { width:160px; height:90px; background-size:1000%;
-         background-image:url('https://media.noco.tv/mosaique/nol/c/2/AT_s14s04_ba40ddae5e0517b277a005c583beb60e.jpg'); }
-  .mos00 { background-position:00.00% 00.00%; }
-  .mos01 { background-position:11.11% 00.00%; }
-  .mos02 { background-position:22.22% 00.00%; }
-  .mos03 { background-position:33.33% 00.00%; }
-  .mos04 { background-position:44.44% 00.00%; }
-  .mos05 { background-position:55.55% 00.00%; }
-  .mos06 { background-position:66.66% 00.00%; }
-  .mos07 { background-position:77.77% 00.00%; }
-  .mos08 { background-position:88.88% 00.00%; }
-  .mos09 { background-position:99.99% 00.00%; }
+  .mos   { width:160px; height:90px; background-size:1000%; }
+  .mos0  { background-position:00.00% 00.00%; }
+  .mos1  { background-position:11.11% 00.00%; }
+  .mos2  { background-position:22.22% 00.00%; }
+  .mos3  { background-position:33.33% 00.00%; }
+  .mos4  { background-position:44.44% 00.00%; }
+  .mos5  { background-position:55.55% 00.00%; }
+  .mos6  { background-position:66.66% 00.00%; }
+  .mos7  { background-position:77.77% 00.00%; }
+  .mos8  { background-position:88.88% 00.00%; }
+  .mos9  { background-position:99.99% 00.00%; }
   .mos10 { background-position:00.00% 11.11%; }
   .mos11 { background-position:11.11% 11.11%; }
   .mos12 { background-position:22.22% 11.11%; }
@@ -178,6 +177,7 @@ function headers () {
   .mos98 { background-position:88.88% 99.99%; }
   .mos99 { background-position:99.99% 99.99%; }
   </style>
+  <script src='../../../../../shows.js' type='text/javascript'></script>
   `
 }
 
@@ -298,6 +298,7 @@ function createPartnerFamilyYearShows (dir, part, fam, year) {
 
   let out = headers()
   const scrRE = new RegExp('https://media.noco.tv/screenshot/([a-z]+)/[0-9x]*/(.*)')
+  const mosRE = new RegExp('https://media.noco.tv/mosaique/')
 
   shows.forEach((show, i) => {
     const dur = formatDurationHuman(show.duration_ms)
@@ -310,11 +311,11 @@ function createPartnerFamilyYearShows (dir, part, fam, year) {
     }
     let scr = show.screenshot_1024x576
     scr = scr.replace(scrRE, 'http://static.atomas.com/noco/media.noco.tv/screenshot_160x90/$1/160x90/$2')
+    let mos = show.mosaique
+    mos = mos.replace(mosRE, 'http://static.atomas.com/noco/media.noco.tv/mosaique/')
 
-    out += `<div style='display:none'}'>`
-    out += `  <div id='mos'></div>`
-    out += `</div>`
     out += `<div class='show' data-id='${show.id_show}'>`
+    out += `  <div class='mos' style='display:none; background-image:url("${mos}");'></div>`
     out += `  <div class='show-scr'><img src='${scr}' /></div>`
     out += `  <div class='show-desc'>`
     out += `    <div class='show-name'>`
