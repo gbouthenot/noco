@@ -1,0 +1,310 @@
+URL API NOCO:
+https://api.noco.tv/1.1/documentation/
+
+GET /partners -> partners.js
+
+GET /families
+
+id_partner:
+1 -> 132
+4 -> 3
+9 -> 4
+12 -> 1
+18 -> 2
+24 -> 5
+26 -> 1
+
+# tri par id:
+families.filter(_=>_.id_partner===1).sort((a,b)=>a.id_family-b.id_family).map(_=>`${_.family_key}: ${_.id_family}: ${_.family_TT}`).join("\n")
+CU: 3: 101%
+OP: 4: OTO Play
+SP: 5: Superplay
+OTEX: 6: OTO EX
+TR: 7: Temps Réel
+CS: 8: Critique
+RP: 9: Reportage
+IK: 10: L'Instant Kamikaze
+SO18: 12: Classés 18+
+MG: 14: La minute du geek
+1S: 19: One-shot
+BD: 21: BD Blogueurs
+CM: 22: Chez Marcus
+DM: 28: Debug Mode
+DP: 29: Deux minutes pour parler de...
+EX: 30: EXP
+FC: 31: Format Court
+GL: 33: Geek's Life
+HA: 35: Hall of Shame
+HP: 37: Hidden Palace
+JE: 39: Le jeu du ***
+MM: 43: Mange mon geek
+MS: 44: Mon souvenir
+FA: 46: Film amateur
+OS: 47: Oscillations
+OT: 48: OTO
+PI: 51: PIXA
+RM: 54: Retro & Magic
+RS: 55: Roadstrip
+TC: 56: Tôkyô Café
+TP: 57: Temps Perdu
+SO: 60: Soirée spéciale
+DO: 61: Documentaire
+NL: 62: Nolife
+DF: 63: Double Face
+JMCU: 65: Jamais sans 1%
+JTSR: 66: J-Top (Speed run)
+CA: 67: Le coin des abonnés
+3MPP: 68: 3mn pas + pour parler d'un jeu 3+
+CT: 69: Chaud Time
+JM: 75: Japan in Motion
+CP: 76: Costume Player
+CPL: 77: Compiler
+CK: 78: Catsuka
+MNM: 79: Mon Nolife à Moi
+VF: 80: Le Visiteur du Futur
+MOS: 81: Money Shot
+NC: 82: Nochan
+EC: 86: écrans.fr, le podcast
+GC: 88: Game Center
+1D6: 91: 1D6
+RA: 92: Ce soir j'ai raid
+EL: 93: Extra Life
+PN: 94: Le point sur Nolife
+NEI: 95: Nolife Emploi IRL
+SK: 96: Skill
+TOC: 97: toco toco
+PIC: 98: PICO PICO
+SM: 99: Smartphones & Tablettes
+RC: 100: Rêves et Cris
+CRE: 102: CréAtioN
+JJS: 103: J'ai jamais su dire non
+WP: 104: War Pigs
+BBH: 105: Big Bug Hunter
+HC: 107: Hard Corner
+PTB: 108: The Place to Be
+NG: 109: Nihongo ga dekimasu ka
+VH: 110: Very Hard
+OPL: 111: Les Oubliés de la Playhistoire
+TG: 112: Game Trailer
+VAC: 115: Les vacances de Nolife
+BLA: 116: Les Blablagues de Laurent-Laurent
+AH: 117: Another Hero
+CCO: 120: Côté Comics
+TIPS: 126: Technologie de l’Information en Pratique et Sans danger
+MMPG: 127: Metal Missile & Plastic Gun
+WIP: 130: WiP – Work in Progress
+JET: 131: Jeu-Top
+FFIV: 137: France Five
+DS: 138: Devil'Slayer
+56K: 139: 56Kast
+AFM: 140: Hôkago Midnighters
+AT: 142: À Table !
+KYO: 143: Kyô no wanko - Le Toutou du jour
+LGP: 144: La Grosse Partie
+PUR: 145: Purgatoire
+LR: 194: Live report
+ALAV: 211: À lire, à voir
+POL: 214: (Vous savez) Pourquoi on est là
+BBAH: 217: Big Bang Hunter
+CRUN: 220: Crunch Time
+EJ: 223: Esprit Japon
+NOIR: 232: Noir
+INFO: 235: Le Point Info
+GUNG: 254: Gundam Reconguista in G
+MONH: 260: Journal de Monster Hunter : Le Village Felyne au bord du Gouffre G
+FMPG: 263: Fatal Misses & Plastic Girl
+COVI: 276: Les conseils vidéo du professeur Théorie et du docteur Pratique
+NONS: 279: NONSÉRIE
+MDS: 284: mot de saison
+GUNB: 285: Gunbuster / Diebuster
+WOLF: 319: Wolf's Rain
+CUP: 322: 101 PUR 100
+FAQ: 325: FAQ
+MPC: 328: Mon plan Culte
+HDN: 331: L'hippodrôle de Nolife
+CTAC: 334: Club Télé Achier
+CQFD: 337: Ce qu'il ne faut pas dire
+HJV: 340: L'Hebdo Jeu Vidéo
+ST: 343: Stamina
+FAL: 346: La Faute à l'algo
+RAA: 348: Random Access Archives
+LST: 354: Le Saviez-tu ? De Jean-Foutre
+NW: 357: News
+DCLP: 360: Le Decliptage du J-Top
+J-5: 362: J-5
+SOJ: 364: Silence, on joue !
+ZIKO: 368: Zikos
+CQ: 372: Collector's Quest
+CDB: 376: Ça déboîte !
+FMP: 380: Full Metal Panic!
+ROL: 388: Roleplay
+PLS: 392: Nuit Calme en PLS
+EMN: 396: En Mode Normal
+PIX: 400: PIXELS
+UPS: 404: Un peu de silence
+BOJ: 408: À la découverte des beautés inconnues du Japon
+FCON: 410: First Contact
+CI: 413: Le Continue de l'info
+KES: 425: Keskejfé
+LLS: 431: Love Live! Sunshine!!
+DL: 437: DonJon Legacy
+
+
+families.filter(_=>_.id_partner===1).sort((a,b)=>a.family_TT.localeCompare(b.family_TT)).map(_=>`${_.family_TT}: ${_.family_key}`).join("\n")
+(Vous savez) Pourquoi on est là: POL
+101 PUR 100: CUP
+101%: CU
+1D6: 1D6
+3mn pas + pour parler d'un jeu 3+: 3MPP
+56Kast: 56K
+À la découverte des beautés inconnues du Japon: BOJ
+À lire, à voir: ALAV
+À Table !: AT
+Another Hero: AH
+BD Blogueurs: BD
+Big Bang Hunter: BBAH
+Big Bug Hunter: BBH
+Ça déboîte !: CDB
+Catsuka: CK
+Ce qu'il ne faut pas dire: CQFD
+Ce soir j'ai raid: RA
+Chaud Time: CT
+Chez Marcus: CM
+Classés 18+: SO18
+Club Télé Achier: CTAC
+Collector's Quest: CQ
+Compiler: CPL
+Costume Player: CP
+Côté Comics: CCO
+CréAtioN: CRE
+Critique: CS
+Crunch Time: CRUN
+Debug Mode: DM
+Deux minutes pour parler de...: DP
+Devil'Slayer: DS
+Documentaire: DO
+DonJon Legacy: DL
+Double Face: DF
+écrans.fr, le podcast: EC
+En Mode Normal: EMN
+Esprit Japon: EJ
+EXP: EX
+Extra Life: EL
+FAQ: FAQ
+Fatal Misses & Plastic Girl: FMPG
+Film amateur: FA
+First Contact: FCON
+Format Court: FC
+France Five: FFIV
+Full Metal Panic!: FMP
+Game Center: GC
+Game Trailer: TG
+Geek's Life: GL
+Gunbuster / Diebuster: GUNB
+Gundam Reconguista in G: GUNG
+Hall of Shame: HA
+Hard Corner: HC
+Hidden Palace: HP
+Hôkago Midnighters: AFM
+J-5: J-5
+J-Top (Speed run): JTSR
+J'ai jamais su dire non: JJS
+Jamais sans 1%: JMCU
+Japan in Motion: JM
+Jeu-Top: JET
+Journal de Monster Hunter : Le Village Felyne au bord du Gouffre G: MONH
+Keskejfé: KES
+Kyô no wanko - Le Toutou du jour: KYO
+L'Hebdo Jeu Vidéo: HJV
+L'hippodrôle de Nolife: HDN
+L'Instant Kamikaze: IK
+La Faute à l'algo: FAL
+La Grosse Partie: LGP
+La minute du geek: MG
+Le coin des abonnés: CA
+Le Continue de l'info: CI
+Le Decliptage du J-Top: DCLP
+Le jeu du ***: JE
+Le Point Info: INFO
+Le point sur Nolife: PN
+Le Saviez-tu ? De Jean-Foutre: LST
+Le Visiteur du Futur: VF
+Les Blablagues de Laurent-Laurent: BLA
+Les conseils vidéo du professeur Théorie et du docteur Pratique: COVI
+Les Oubliés de la Playhistoire: OPL
+Les vacances de Nolife: VAC
+Live report: LR
+Love Live! Sunshine!!: LLS
+Mange mon geek: MM
+Metal Missile & Plastic Gun: MMPG
+Mon Nolife à Moi: MNM
+Mon plan Culte: MPC
+Mon souvenir: MS
+Money Shot: MOS
+mot de saison: MDS
+News: NW
+Nihongo ga dekimasu ka: NG
+Nochan: NC
+Noir: NOIR
+Nolife: NL
+Nolife Emploi IRL: NEI
+NONSÉRIE: NONS
+Nuit Calme en PLS: PLS
+One-shot: 1S
+Oscillations: OS
+OTO: OT
+OTO EX: OTEX
+OTO Play: OP
+PICO PICO: PIC
+PIXA: PI
+PIXELS: PIX
+Purgatoire: PUR
+Random Access Archives: RAA
+Reportage: RP
+Retro & Magic: RM
+Rêves et Cris: RC
+Roadstrip: RS
+Roleplay: ROL
+Silence, on joue !: SOJ
+Skill: SK
+Smartphones & Tablettes: SM
+Soirée spéciale: SO
+Stamina: ST
+Superplay: SP
+Technologie de l’Information en Pratique et Sans danger: TIPS
+Temps Perdu: TP
+Temps Réel: TR
+The Place to Be: PTB
+toco toco: TOC
+Tôkyô Café: TC
+Un peu de silence: UPS
+Very Hard: VH
+War Pigs: WP
+WiP – Work in Progress: WIP
+Wolf's Rain: WOLF
+Zikos: ZIKO
+
+Quand on se connecte sur l'api doc:
+https://api.noco.tv/1.1/OAuth2/authorize.php?response_type=token&state=xyz&redirect_uri=https%3A%2F%2Fapi.noco.tv%2Fo2c.html&realm=5ae5f7fbe420f7f104084a3bfc3b6271&client_id=DocumentationAPI&scope=noco_account
+https://api.noco.tv/1.1/OAuth2/authorize.php?response_type=code&client_id=DocumentationAPI&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&scope=noco_account&state=%3Cstate%3E
+
+Je cite un message du topic noconoco, sur comment donner accès aux vidéos gratuites, sans avoir besoin de compte via l'API ;)
+
+King Pingouin a dit: ↑
+Pour récapituler : pour un utilisateur authentifié il faut récupérer un token en passant :
+"grant_type" = "authorization_code"
+"code" = la valeur du code retournée par l'authentification
+
+Pour le refresh il faut :
+"grant_type" = "refresh_token"
+"refresh_token" = la valeur du refresh token
+
+Pour un non utilisateur qui n'a donc pas de code, il faut :
+"grant_type" = "client_credentials"
+La réponse ne contient alors que : un access_token sans refresh_token, (et je ne me souviens plus de la durée de session de cette token)
+Cet access_token te permet de te connecter a toute l'API /show
+Mais les résultats vidéos visibles par un non utilisateur (donc pertinent) ne sont retournés que par le lien suivant :
+https://api.noco.tv:443/1.1/shows?guest_free=1
+
+EDIT : Et pas de problème de quota non plus car chaque non-utilisateur aura un token différent. Et Vu que de toutes facons a la base il n'y a pas d'utilisateur, la question ne se pose même pas. :p
+
