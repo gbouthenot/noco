@@ -1,0 +1,81 @@
+{
+  "audio_languages": [
+    {
+      "audio_language": "cn",
+      "audio_french_name": null,
+      "audio_english_name": null
+    },
+    {
+      "audio_language": "de",
+      "audio_french_name": "allemand",
+      "audio_english_name": "German"
+    },
+    {
+      "audio_language": "en",
+      "audio_french_name": "anglais",
+      "audio_english_name": "English"
+    },
+    {
+      "audio_language": "es",
+      "audio_french_name": "espagnol; castillan",
+      "audio_english_name": "Spanish; Castilian"
+    },
+    {
+      "audio_language": "fr",
+      "audio_french_name": "français",
+      "audio_english_name": "French"
+    },
+    {
+      "audio_language": "id",
+      "audio_french_name": "indonésien",
+      "audio_english_name": "Indonesian"
+    },
+    {
+      "audio_language": "ja",
+      "audio_french_name": "japonais",
+      "audio_english_name": "Japanese"
+    },
+    {
+      "audio_language": "ko",
+      "audio_french_name": "coréen",
+      "audio_english_name": "Korean"
+    },
+    {
+      "audio_language": "nl",
+      "audio_french_name": "néerlandais; flamand",
+      "audio_english_name": "Dutch; Flemish"
+    }
+  ],
+  "sub_languages": [
+    {
+      "video_language": null,
+      "sub_french_name": null,
+      "sub_english_name": null
+    },
+    {
+      "video_language": "en",
+      "sub_french_name": "anglais",
+      "sub_english_name": "English"
+    },
+    {
+      "video_language": "es",
+      "sub_french_name": "espagnol; castillan",
+      "sub_english_name": "Spanish; Castilian"
+    },
+    {
+      "video_language": "fr",
+      "sub_french_name": "français",
+      "sub_english_name": "French"
+    },
+    {
+      "video_language": "it",
+      "sub_french_name": "italien",
+      "sub_english_name": "Italian"
+    },
+    {
+      "video_language": "ja",
+      "sub_french_name": "japonais",
+      "sub_english_name": "Japanese"
+    }
+  ]
+}

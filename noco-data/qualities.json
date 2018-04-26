@@ -1,0 +1,32 @@
+{
+  "LQ": {
+    "id_quality": 1,
+    "quality_name": "Basse",
+    "quality_key": "LQ",
+    "priority": 100
+  },
+  "HQ": {
+    "id_quality": 2,
+    "quality_name": "Moyenne",
+    "quality_key": "HQ",
+    "priority": 200
+  },
+  "TV": {
+    "id_quality": 3,
+    "quality_name": "Standard",
+    "quality_key": "TV",
+    "priority": 300
+  },
+  "HD_720": {
+    "id_quality": 4,
+    "quality_name": "HD",
+    "quality_key": "HD_720",
+    "priority": 400
+  },
+  "HD_1080": {
+    "id_quality": 5,
+    "quality_name": "Full HD",
+    "quality_key": "HD_1080",
+    "priority": 500
+  }
+}

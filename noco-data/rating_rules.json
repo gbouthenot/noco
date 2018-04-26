@@ -1,0 +1,122 @@
+{
+  "10": [
+    {
+      "id_rating_rule": 1,
+      "description": "Carton CSA 10",
+      "ressource": "https://media.noco.tv/ressources/rating/carton_10.svg",
+      "start": 0,
+      "duration": 12000,
+      "coor_x": 50,
+      "coor_y": 50,
+      "offset_x": 0,
+      "offset_y": 0,
+      "size": 60,
+      "before_start": 1,
+      "rating_fr": 10
+    },
+    {
+      "id_rating_rule": 5,
+      "description": "Pictogramme CSA 10",
+      "ressource": "https://media.noco.tv/ressources/rating/picto_10.svg",
+      "start": 0,
+      "duration": -1,
+      "coor_x": 100,
+      "coor_y": 100,
+      "offset_x": -9,
+      "offset_y": -7,
+      "size": 4,
+      "before_start": 0,
+      "rating_fr": 10
+    }
+  ],
+  "12": [
+    {
+      "id_rating_rule": 2,
+      "description": "Carton CSA 12",
+      "ressource": "https://media.noco.tv/ressources/rating/carton_12.svg",
+      "start": 0,
+      "duration": 12000,
+      "coor_x": 50,
+      "coor_y": 50,
+      "offset_x": 0,
+      "offset_y": 0,
+      "size": 60,
+      "before_start": 1,
+      "rating_fr": 12
+    },
+    {
+      "id_rating_rule": 6,
+      "description": "Pictogramme CSA 12",
+      "ressource": "https://media.noco.tv/ressources/rating/picto_12.svg",
+      "start": 0,
+      "duration": -1,
+      "coor_x": 100,
+      "coor_y": 100,
+      "offset_x": -9,
+      "offset_y": -7,
+      "size": 4,
+      "before_start": 0,
+      "rating_fr": 12
+    }
+  ],
+  "16": [
+    {
+      "id_rating_rule": 3,
+      "description": "Carton CSA 16",
+      "ressource": "https://media.noco.tv/ressources/rating/carton_16.svg",
+      "start": 0,
+      "duration": 12000,
+      "coor_x": 50,
+      "coor_y": 50,
+      "offset_x": 0,
+      "offset_y": 0,
+      "size": 60,
+      "before_start": 1,
+      "rating_fr": 16
+    },
+    {
+      "id_rating_rule": 7,
+      "description": "Pictogramme CSA 16",
+      "ressource": "https://media.noco.tv/ressources/rating/picto_16.svg",
+      "start": 0,
+      "duration": -1,
+      "coor_x": 100,
+      "coor_y": 100,
+      "offset_x": -9,
+      "offset_y": -7,
+      "size": 4,
+      "before_start": 0,
+      "rating_fr": 16
+    }
+  ],
+  "18": [
+    {
+      "id_rating_rule": 4,
+      "description": "Carton CSA 18",
+      "ressource": "https://media.noco.tv/ressources/rating/carton_18.svg",
+      "start": 0,
+      "duration": 12000,
+      "coor_x": 50,
+      "coor_y": 50,
+      "offset_x": 0,
+      "offset_y": 0,
+      "size": 60,
+      "before_start": 1,
+      "rating_fr": 18
+    },
+    {
+      "id_rating_rule": 8,
+      "description": "Pictogramme CSA 18",
+      "ressource": "https://media.noco.tv/ressources/rating/picto_18.svg",
+      "start": 0,
+      "duration": -1,
+      "coor_x": 100,
+      "coor_y": 100,
+      "offset_x": -9,
+      "offset_y": -7,
+      "size": 4,
+      "before_start": 0,
+      "rating_fr": 18
+    }
+  ]
+}
