@@ -1,3 +1,6 @@
+/* eslint-disable arrow-spacing, block-spacing, comma-spacing, no-const-assign,
+   no-multiple-empty-lines, no-irregular-whitespace,
+   no-undef, no-unused-expressions, quotes, space-infix-ops */
 const shows = require('./noco-data/shows_full.json')
 const families = require('./noco-data/families.json')
 console.log(shows.length)
@@ -23,9 +26,9 @@ families.filter(_=>_.id_partner===1).sort((a,b)=>a.family_TT.localeCompare(b.fam
 // array des familles, trié par nom, format "nom£id£key"
 fams = families.filter(_=>_.id_partner===1).sort((a,b)=>a.family_TT.localeCompare(b.family_TT)).map(_=>`${_.family_TT}£${_.id_family}£${_.family_key}`)
 
-fams.map(_=>_.split('£')).forEach(fam=>{famname=fam[0]; famid=fam[1]; console.log(`Famille ${famname}`); })
+fams.map(_=>_.split('£')).forEach(fam=>{famname=fam[0]; famid=fam[1]; console.log(`Famille ${famname}`)})
 
-fams.forEach(fam=>{fam=fam.split('£'); famname=fam[0]; famid=fam[1]; sho=shows.filter(_=>_.partner_key==='NOL'&&_.id_family==famid); console.log(`${famname}: ${sho.length}`); })
+fams.forEach(fam=>{fam=fam.split('£'); famname=fam[0]; famid=fam[1]; sho=shows.filter(_=>_.partner_key==='NOL'&&_.id_family===famid); console.log(`${famname}: ${sho.length}`)})
 
 /*
 (Vous savez) Pourquoi on est là (214): 80
@@ -214,7 +217,7 @@ shows.find(_=>_.id_show===4059)
 // ep=>`https://noco.tv/emission/${ep.id_show}/${ep.partner_shortname}/${ep.family_TT}/${ep.episode_number?ep.episode_number+'-':''}${ep.show_TT}`.replace(/[\']/g, ' ').replace(/[()! ,\+:&]/g, '').replace(/[ \.;]/g, '-').replace(/--+/g, '-').replace(/-$/g, '').toLowerCase()
 
 // ex: les urls de toutes les critiques:
-shows.filter(_=>_.id_family===8).map(ep=>`https://noco.tv/emission/${ep.id_show}/`+`${ep.partner_shortname}/${ep.family_TT}/${ep.episode_number?ep.episode_number+'-':''}${ep.show_TT}`.replace(/[\']/g, ' ').replace(/[()! ,\+:&]/g, '').replace(/[ \.;]/g, '-').replace(/--+/g, '-').replace(/-$/g, '').toLowerCase())
+shows.filter(_=>_.id_family===8).map(ep=>`https://noco.tv/emission/${ep.id_show}/`+`${ep.partner_shortname}/${ep.family_TT}/${ep.episode_number?ep.episode_number+'-':''}${ep.show_TT}`.replace(/[']/g, ' ').replace(/[()! ,+:&]/g, '').replace(/[ .;]/g, '-').replace(/--+/g, '-').replace(/-$/g, '').toLowerCase())
 
 // ex: les titres de tous les superplays
 shows.filter(_=>_.id_family===5).map(ep=>`${ep.id_show} #${ep.episode_number} ${ep.show_OT}`)
@@ -235,8 +238,8 @@ fs.writeFileSync("screenshots.txt", scr.join('\n'))
 // lancer bl():
 // node noco_fetch_api.js() > tmp.json
 // node
-shows = require('./noco-data/shows_full.json');nss = require('./tmp.json')
-nss.map(_=>_.id_show).filter(id=>!shows.find(show=>show.id_show===id)).map(id=>show=shows.find(_=>_.id_show===id)).map(_=>[_.id_show, _.family_TT, _.show_TT, _.screenshot_1024x576, _.mosaique])
+shows = require('./noco-data/shows_full.json'); nss = require('./tmp.json')
+nss.map(_=>_.id_show).filter(id=>!shows.find(show=>show.id_show===id)).map(id=>shows.find(_=>_.id_show===id)).map(_=>[_.id_show, _.family_TT, _.show_TT, _.screenshot_1024x576, _.mosaique])
 // [ 51809, 51893 ]
 // [ 51947, 51938, 51917, 51923, 51914, 51920, 51911, 51932, 51803 ]
 // zombie: 51923, 51920, 51932
@@ -265,10 +268,9 @@ nss.map(_=>_.id_show).filter(id=>!shows.find(show=>show.id_show===id)).map(id=>s
 
 // show:24963: enlever espace dans screenshots et show_key
 
-
-[ 51956 ]
 // nouveaux shows
 shows_18avr.map(_=>_.id_show).filter(id=>!shows.find(show=>show.id_show===id));
+[ 51956 ]
 
 // shows supprimés:
 shows.map(_=>_.id_show).filter(id=>!shows_18avr.find(show=>show.id_show===id));
