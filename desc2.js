@@ -330,6 +330,7 @@ function createPartnerFamilyYearShows (dir, part, fam, year) {
     out += '  </div>\n'
     out += '</div>\n'
   })
+  out += '<script>new Mosaique().init()</script>'
 
   fs.writeFileSync(`${dir}/index.html`, out)
 }
