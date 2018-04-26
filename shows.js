@@ -25,7 +25,7 @@ class Mosaique {
         // il y a déjà une alim: l'éteint
         // si on a cliqué sur une autre émission, démarre la nouvelle anim
         off()
-        if (mos !== e.delTarget.querySelector(".mos")) {
+        if (mos !== e.delTarget.querySelector(".show-mos")) {
           on(e.delTarget)
         }
       } else {
@@ -34,7 +34,7 @@ class Mosaique {
     })
 
     function on (target) {
-      mos = target.querySelector(".mos")
+      mos = target.querySelector(".show-mos")
       scr = target.querySelector(".show-scr")
       etp = 0
       mos.classList.add("mos" + etp)
