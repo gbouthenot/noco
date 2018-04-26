@@ -268,13 +268,13 @@ nss.map(_=>_.id_show).filter(id=>!shows.find(show=>show.id_show===id)).map(id=>s
 
 // show:24963: enlever espace dans screenshots et show_key
 
-// nouveaux shows
-shows_18avr.map(_=>_.id_show).filter(id=>!shows.find(show=>show.id_show===id));
+// nouveaux shows (dans shows_date mais pas dans shows)
+shows_date.map(_=>_.id_show).filter(id=>!shows.find(show=>show.id_show===id));
 [ 51956 ]
 
-// shows supprimés:
-shows.map(_=>_.id_show).filter(id=>!shows_18avr.find(show=>show.id_show===id));
-[ 7283 ]
+// shows supprimés (dans shows mais pas dans shows_date)
+shows.map(_=>_.id_show).filter(id=>!shows_date.find(show=>show.id_show===id));
+[ 7283 ] // superplay damdam
 
 
 // wget --input-file=screenshots.txt --no-verbose --tries=5 --retry-connrefused --no-clobber --wait=10 --random-wait --waitretry=57 --force-directories
