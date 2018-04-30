@@ -165,7 +165,29 @@ Wolf's Rain (319): 0
 Zikos (368): 18
 */
 
+// Les familles qui utilisent season_number:
+shows.filter(_=>_.season_number!==0).map(_=>_.id_family).filter((x, i, a) => a.indexOf(x)===i).map(_=>families.find(y=>y.id_family===_).family_TT);
+[ 'Roleplay',
+  'DonJon Legacy',
+  'Japan in Motion',
+  'Zikos',
+  'Noob',
+  'Les conseils vidéo du professeur Théorie et du docteur Pratique',
+  'J-5',
+  'Purgatoire',
+  'Himawari! à l\'école des ninjas',
+  'NONSÉRIE',
+  'Metal Hurlant Chronicles',
+  'The Guild',
+  'Nolife',
+  'Côté Comics',
+  'Film amateur',
+  'WiP – Work in Progress',
+  'Flander\'s Company' ]
 
+// Les familles qui n'ont pas de date de diffusion
+shows.filter(_=>_.broadcast_date_utc===null).map(_=>_.id_family).filter((x, i, a) => a.indexOf(x)===i).map(_=>families.find(y=>y.id_family===_).family_TT);
+[ 'WarpZone Project', 'Le Blog de Gaea' ]
 
 // Uniquement "Vous savez pourquoi on est là":
 shows.filter(_=>_.partner_key==='NOL'&&_.family_key==='POL').length
@@ -204,6 +226,9 @@ shows.find(_=>_.id_show===4059)
 // screenshot_960x540
 // screenshot_1024x576
 // mosaique
+// sorting_date_utc
+// online_date_start_utc
+// last_sorting_date_utc ?
 // broadcast_date_utc
 // season_number
 // episode_number
