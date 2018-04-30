@@ -149,12 +149,12 @@ function createPartnerFamilyYears (dir, part, fam) {
   let out = headers()
 
   // Par année, unique, trié
-  let years = showsFam.filter(_ => _.broadcast_date_utc).map(_ => _.broadcast_date_utc.slice(0, 4))
+  let years = showsFam.filter(_ => _.sorting_date_utc).map(_ => _.sorting_date_utc.slice(0, 4))
   years = [...new Set(years)]
   years = years.sort()
 
   years.forEach(year => {
-    const shows = showsFam.filter(_ => _.broadcast_date_utc.slice(0, 4) === year)
+    const shows = showsFam.filter(_ => _.sorting_date_utc.slice(0, 4) === year)
     const duration = shows.reduce((acc, cur) => acc + cur.duration_ms, 0)
     const dur = formatDurationHuman(duration)
     out += `<div class='year'>`
@@ -176,10 +176,11 @@ function createPartnerFamilyYearShows (dir, part, fam, year) {
   const familyId = fam.id_family
   !fs.existsSync(dir) && fs.mkdirSync(dir)
 
+  // TODO: créer une nouvelle colonne = broadcast ou sorting
   const shows = allshows.filter(show => show.id_partner === partnerId &&
     show.id_family === familyId &&
-    show.broadcast_date_utc.slice(0, 4) === year)
-    .sort((a, b) => a.broadcast_date_utc.localeCompare(b.broadcast_date_utc))
+    show.sorting_date_utc.slice(0, 4) === year)
+    .sort((a, b) => a.sorting_date_utc.localeCompare(b.sorting_date_utc))
 
   let out = headers()
   const scrRE = new RegExp('https://media.noco.tv/screenshot/([a-z]+)/[0-9x]*/(.*)')
@@ -207,14 +208,18 @@ function createPartnerFamilyYearShows (dir, part, fam, year) {
     out += `  <div class='show-scr'><img src='${scr}' /></div>`
     out += `  <div class='show-desc'>`
     out += `    <div class='show-name'>`
-    out += `      <div class='num'>#${++i}</div>`
+    out += `      <div class='num'>#${++i} S${show.season_number}E${show.episode_number}</div>`
     out += `      <div class='title'>${title.join(' - ')}</div>`
     out += `      <div class='key'>${show.show_key}</div>`
     out += `    </div>`
     if (show.show_resume && show.show_resume.length) {
       out += `    <div class='show-resume'>${show.show_resume.replace(/\n/g, '\n    ')}</div>\n`
     }
-    out += `    <div class='show-stats'>diffusé le ${show.broadcast_date_utc} -- ${dur}</div>\n`
+    out += `    <div class='show-stats'>`
+    if (show.broadcast_date_utc) {
+      out += `      diffusé le ${show.broadcast_date_utc} -- `
+    }
+    out += `${dur}</div>\n`
     out += '  </div>\n'
     out += '</div>\n'
   })
