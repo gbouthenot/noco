@@ -128,6 +128,9 @@ function createPartnerFamilies (dir, part) {
     if (fam.family_TT !== fam.family_OT) {
       out += `<div class='fam-name-vo'>${fam.family_OT} (${fam.OT_lang})</div>`
     }
+    if (fam.family_resume) {
+      out += `<div class='fam-resume'>${fam.family_resume}</div>`
+    }
     out += `</div>\n`
   })
 
@@ -186,43 +189,62 @@ function createPartnerFamilyYearShows (dir, part, fam, year) {
   const scrRE = new RegExp('https://media.noco.tv/screenshot/([a-z]+)/[0-9x]*/(.*)')
   const mosRE = new RegExp('https://media.noco.tv/mosaique/')
 
-  shows.forEach((show, i) => {
-    const dur = formatDurationHuman(show.duration_ms)
-    const title = []
-    if (allfamilies.find(_ => _.id_family === show.id_family).family_TT !== show.family_TT) {
-      title.push(`${show.family_TT}`)
-    }
-    if (show.show_TT && show.show_TT.length) {
-      title.push(`${show.show_TT}`)
-    }
-    let scr = show.screenshot_1024x576
-    scr = scr.replace(scrRE, `${nocomedia}screenshot_160x90/$1/160x90/$2`)
-    let mos = show.mosaique
-    mos = mos.replace(mosRE, `${nocomedia}mosaique/`)
+  const displayShows = (shows) => {
+    let out = ''
+    shows.forEach((show, i) => {
+      const dur = formatDurationHuman(show.duration_ms)
+      const title = []
+      if (allfamilies.find(_ => _.id_family === show.id_family).family_TT !== show.family_TT) {
+        title.push(`${show.family_TT}`)
+      }
+      if (show.show_TT && show.show_TT.length) {
+        title.push(`${show.show_TT}`)
+      }
+      let scr = show.screenshot_1024x576
+      scr = scr.replace(scrRE, `${nocomedia}screenshot_160x90/$1/160x90/$2`)
+      let mos = show.mosaique
+      mos = mos.replace(mosRE, `${nocomedia}mosaique/`)
 
-    out += `<div class='show' data-id='${show.id_show}'>`
-    out += `  <div class='show-mos' style='display:none;'>`
-    out += `    <div class='mos' style='background-image:url("${mos}");'></div>`
-    out += `    <div class='prog'></div>`
-    out += `  </div>`
-    out += `  <div class='show-scr'><img src='${scr}' /></div>`
-    out += `  <div class='show-desc'>`
-    out += `    <div class='show-name'>`
-    out += `      <div class='num'>#${++i} S${show.season_number}E${show.episode_number}</div>`
-    out += `      <div class='title'>${title.join(' - ')}</div>`
-    out += `      <div class='key'>${show.show_key}</div>`
-    out += `    </div>`
-    if (show.show_resume && show.show_resume.length) {
-      out += `    <div class='show-resume'>${show.show_resume.replace(/\n/g, '\n    ')}</div>\n`
-    }
-    out += `    <div class='show-stats'>`
-    if (show.broadcast_date_utc) {
-      out += `      diffusé le ${show.broadcast_date_utc} -- `
-    }
-    out += `${dur}</div>\n`
-    out += '  </div>\n'
-    out += '</div>\n'
-  })
+      out += `<div class='show' data-id='${show.id_show}'>`
+      out += `  <div class='show-mos' style='display:none;'>`
+      out += `    <div class='mos' style='background-image:url("${mos}");'></div>`
+      out += `    <div class='prog'></div>`
+      out += `  </div>`
+      out += `  <div class='show-scr'><img src='${scr}' /></div>`
+      out += `  <div class='show-desc'>`
+      out += `    <div class='show-name'>`
+      out += `      <div class='num'>#${++i} S${show.season_number}E${show.episode_number}</div>`
+      out += `      <div class='title'>${title.join(' - ')}</div>`
+      out += `      <div class='key'>${show.show_key}</div>`
+      out += `    </div>`
+      if (show.show_resume && show.show_resume.length) {
+        out += `    <div class='show-resume'>${show.show_resume.replace(/\n/g, '\n    ')}</div>\n`
+      }
+      out += `    <div class='show-stats'>`
+      if (show.broadcast_date_utc) {
+        out += `      diffusé le ${show.broadcast_date_utc} -- `
+      }
+      out += `${dur}</div>\n`
+      out += '  </div>\n'
+      out += '</div>\n'
+    })
+    return out
+  }
+
+  // les émissions qui ont un episode number
+  let showsEp = shows.filter(_ => _.episode_number !== 0)
+  if (showsEp.length) {
+    out += '<h1>Épisodes</h1>\n'
+    out += displayShows(showsEp)
+    out += '<hr />'
+  }
+  // les autres
+  showsEp = shows.filter(_ => _.episode_number === 0)
+  if (showsEp.length) {
+    out += '<h1>Rubriques</h1>\n'
+    out += displayShows(showsEp)
+  }
+
   out += "<script>window.addEventListener('load',_=>new Mosaique().init())</script>"
 
   fs.writeFileSync(`${dir}/index.html`, out)

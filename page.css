@@ -9,6 +9,7 @@
 .fam-type { display:inline; background:#a0a; color:#fff; }
 .fam-stats { display:inline; }
 .fam-name-vo { display:block; }
+.fam-resume { display:block; }
 .year { margin-bottom:1em; }
 .year-name { display:inline; font-size:200%; margin-right:1em; }
 .year-stats { display:inline; }
