@@ -59,3 +59,10 @@ class Mosaique {
 
   }
 }
+
+window.addEventListener("load", _ => {
+  document.querySelectorAll(".partner a, .family a, .year a, .show a").forEach(el => {
+    el.href = `${window.baseurl}out/${el.getAttribute("href")}`
+  })
+  new Mosaique().init()
+})
