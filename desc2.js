@@ -94,14 +94,14 @@ function createPartners (outdir, partners) {
     out += '</div>\n'
     txts.push(out)
 
-    createPartnerFamilies(`${dir}/${part.partner_shortname}`, part, fams, shows)
+    createPartnerFamilies(`${dir}/${part.partner_shortname}`, out, part, fams, shows)
   })
 
   fs.writeFileSync(`${dir}/index.html`, headers() + txts.join('\n'))
 }
 
 // partner : index des familles d'un partner
-function createPartnerFamilies (dir, part, fams, partnerShows) {
+function createPartnerFamilies (dir, prev, part, fams, partnerShows) {
   !fs.existsSync(dir) && fs.mkdirSync(dir)
 
   const txts = []
@@ -132,14 +132,14 @@ function createPartnerFamilies (dir, part, fams, partnerShows) {
     out += `</div>\n`
     txts.push(out)
 
-    createPartnerFamilyYears(`${dir}/${fam.family_key}`, part, fam, showsFam)
+    createPartnerFamilyYears(`${dir}/${fam.family_key}`, prev + out, part, fam, showsFam)
   })
 
-  fs.writeFileSync(`${dir}/index.html`, headers() + txts.join('\n'))
+  fs.writeFileSync(`${dir}/index.html`, headers() + prev + '<hr />' + txts.join('\n'))
 }
 
 // partner -> family : index des années
-function createPartnerFamilyYears (dir, part, fam, showsFam) {
+function createPartnerFamilyYears (dir, prev, part, fam, showsFam) {
   !fs.existsSync(dir) && fs.mkdirSync(dir)
 
   // Par année, unique, trié
@@ -161,14 +161,14 @@ function createPartnerFamilyYears (dir, part, fam, showsFam) {
     out += `</div>\n`
     txts.push(out)
 
-    createPartnerFamilyYearShows(`${dir}/${year}`, part, fam, year, shows)
+    createPartnerFamilyYearShows(`${dir}/${year}`, prev + out, part, fam, year, shows)
   })
 
-  fs.writeFileSync(`${dir}/index.html`, headers() + txts.join('\n'))
+  fs.writeFileSync(`${dir}/index.html`, headers() + prev + '<hr />' + txts.join('\n'))
 }
 
 // partner -> family -> year : index des émissions
-function createPartnerFamilyYearShows (dir, part, fam, year, shows) {
+function createPartnerFamilyYearShows (dir, prev, part, fam, year, shows) {
   !fs.existsSync(dir) && fs.mkdirSync(dir)
 
   // TODO: créer une nouvelle colonne = broadcast ou sorting
@@ -222,7 +222,7 @@ function createPartnerFamilyYearShows (dir, part, fam, year, shows) {
   }
 
   let txts
-  let out = ''
+  let out = prev + '<hr />'
 
   // les émissions qui ont un episode number
   txts = displayShows(shows.filter(_ => _.episode_number !== 0))
