@@ -69,8 +69,7 @@ function headers () {
 }
 
 // les partners
-function createPartners (outdir, partners) {
-  const url = 'by_partner/'
+function createPartners (outdir, url, prev, partners) {
   const dir = `${outdir}/${url}`
   !fs.existsSync(dir) && fs.mkdirSync(dir)
 
@@ -98,10 +97,10 @@ function createPartners (outdir, partners) {
     out += '</div>\n'
     txts.push(out)
 
-    createPartnerFamilies(`${dir}/${part.partner_shortname}`, url2, out, part, fams, shows)
+    createPartnerFamilies(`${dir}/${part.partner_shortname}`, url2, prev + out, part, fams, shows)
   })
 
-  fs.writeFileSync(`${dir}/index.html`, headers() + txts.join('\n'))
+  fs.writeFileSync(`${dir}/index.html`, headers() + prev + '<hr />' + txts.join('\n'))
 }
 
 // partner : index des familles d'un partner
@@ -247,4 +246,5 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, shows) {
   fs.writeFileSync(`${dir}/index.html`, headers() + out)
 }
 
-createPartners(outdir, allpartners)
+const prev = `<div class='access'><div class='access-name'><a href='by_partner/'>Par partenaire</a></div></div>\n`
+createPartners(outdir, 'by_partner/', prev, allpartners)
