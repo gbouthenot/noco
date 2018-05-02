@@ -76,13 +76,14 @@ function createPartners (outdir, partners) {
 
   partSortd.forEach((part) => {
     const fams = allfamilies.filter(_ => _.id_partner === part.id_partner)
-    const shos = allshows.filter(_ => _.id_partner === part.id_partner)
-    const duration = shos.reduce((acc, cur) => acc + cur.duration_ms, 0)
+      .sort((a, b) => a.family_TT.localeCompare(b.family_TT))
+    const shows = allshows.filter(_ => _.id_partner === part.id_partner)
+    const duration = shows.reduce((acc, cur) => acc + cur.duration_ms, 0)
     const durationHuman = formatDurationHuman(duration)
 
     out += `<div class='partner'>`
     out += `<div class="part-name" data-id='${part.id_partner}'><a href="${part.partner_shortname}/">${part.partner_name}</a></div>\n`
-    out += `<div class="part-stats">familles: ${fams.length}; nb emissions: ${shos.length}; durée totale: ${durationHuman}</div>`
+    out += `<div class="part-stats">familles: ${fams.length}; nb emissions: ${shows.length}; durée totale: ${durationHuman}</div>`
     if (part.partner_resume) {
       out += `  <div class='part-resume'>${esc(part.partner_resume)}</div>\n`
     }
@@ -90,22 +91,16 @@ function createPartners (outdir, partners) {
       out += `  <div class='part-subtitle'>${esc(part.partner_subtitle)}</div>\n`
     }
     out += '</div>\n'
+
+    createPartnerFamilies(`${dir}/${part.partner_shortname}`, part, fams, shows)
   })
 
   fs.writeFileSync(`${dir}/index.html`, out)
-
-  partSortd.forEach((part) => {
-    createPartnerFamilies(`${dir}/${part.partner_shortname}`, part)
-  })
 }
 
 // partner : index des familles d'un partner
-function createPartnerFamilies (dir, part) {
-  const partnerId = part.id_partner
+function createPartnerFamilies (dir, part, fams, partnerShows) {
   !fs.existsSync(dir) && fs.mkdirSync(dir)
-
-  const fams = allfamilies.filter(_ => _.id_partner === part.id_partner)
-    .sort((a, b) => a.family_TT.localeCompare(b.family_TT))
 
   let out = headers()
   fams.forEach(fam => {
@@ -113,7 +108,7 @@ function createPartnerFamilies (dir, part) {
     const theme = allthemes.find(_ => _.id_theme === fam.id_theme)
     const type = alltypes.find(_ => _.id_type === fam.id_type)
 
-    const showsFam = allshows.filter(show => show.id_partner === partnerId && show.id_family === familyId)
+    const showsFam = partnerShows.filter(show => show.id_family === familyId)
     // .sort((a, b) => a.broadcast_date_utc.localeCompare(b.broadcast_date_utc))
 
     const durationMs = showsFam.reduce((acc, cur) => acc + cur.duration_ms, 0)
@@ -132,22 +127,16 @@ function createPartnerFamilies (dir, part) {
       out += `<div class='fam-resume'>${fam.family_resume}</div>`
     }
     out += `</div>\n`
+
+    createPartnerFamilyYears(`${dir}/${fam.family_key}`, part, fam, showsFam)
   })
 
   fs.writeFileSync(`${dir}/index.html`, out)
-
-  fams.forEach((fam) => {
-    createPartnerFamilyYears(`${dir}/${fam.family_key}`, part, fam)
-  })
 }
 
 // partner -> family : index des années
-function createPartnerFamilyYears (dir, part, fam) {
-  const partnerId = part.id_partner
-  const familyId = fam.id_family
+function createPartnerFamilyYears (dir, part, fam, showsFam) {
   !fs.existsSync(dir) && fs.mkdirSync(dir)
-
-  const showsFam = allshows.filter(show => show.id_partner === partnerId && show.id_family === familyId)
 
   let out = headers()
 
@@ -158,32 +147,25 @@ function createPartnerFamilyYears (dir, part, fam) {
 
   years.forEach(year => {
     const shows = showsFam.filter(_ => _.sorting_date_utc.slice(0, 4) === year)
+      .sort((a, b) => a.sorting_date_utc.localeCompare(b.sorting_date_utc))
     const duration = shows.reduce((acc, cur) => acc + cur.duration_ms, 0)
     const dur = formatDurationHuman(duration)
     out += `<div class='year'>`
     out += `<div class='year-name' data-id='${year}'><a href="${year}/">Année ${year}</a></div>\n`
     out += `<div class="year-stats">${shows.length} émissions, ${dur}</div>`
     out += `</div>\n`
+
+    createPartnerFamilyYearShows(`${dir}/${year}`, part, fam, year, shows)
   })
 
   fs.writeFileSync(`${dir}/index.html`, out)
-
-  years.forEach((year) => {
-    createPartnerFamilyYearShows(`${dir}/${year}`, part, fam, year)
-  })
 }
 
 // partner -> family -> year : index des émissions
-function createPartnerFamilyYearShows (dir, part, fam, year) {
-  const partnerId = part.id_partner
-  const familyId = fam.id_family
+function createPartnerFamilyYearShows (dir, part, fam, year, shows) {
   !fs.existsSync(dir) && fs.mkdirSync(dir)
 
   // TODO: créer une nouvelle colonne = broadcast ou sorting
-  const shows = allshows.filter(show => show.id_partner === partnerId &&
-    show.id_family === familyId &&
-    show.sorting_date_utc.slice(0, 4) === year)
-    .sort((a, b) => a.sorting_date_utc.localeCompare(b.sorting_date_utc))
 
   let out = headers()
   const scrRE = new RegExp('https://media.noco.tv/screenshot/([a-z]+)/[0-9x]*/(.*)')
@@ -194,6 +176,7 @@ function createPartnerFamilyYearShows (dir, part, fam, year) {
     shows.forEach((show, i) => {
       const dur = formatDurationHuman(show.duration_ms)
       const title = []
+      // si le nom de la famille est différent, affiche-le
       if (allfamilies.find(_ => _.id_family === show.id_family).family_TT !== show.family_TT) {
         title.push(`${show.family_TT}`)
       }
