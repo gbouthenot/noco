@@ -10,7 +10,7 @@
 .part-icn { display:inline-block; width:160px; height:90px; }
 .part-ban { display:inline-block; width:160px; height:90px; }
 .part-icn img { width:160px; height:90px; }
-.part-desc { display:table-cell; vertical-align:middle; padding-left:.5em; background-image:linear-gradient(#fff 33%,#ccc); }
+.part-desc { display:table-cell; vertical-align:middle; padding-left:.5em; background-image:linear-gradient(#fff 33%,#ccc); width:100%; }
 .part-ban img { width:160px; height:90px; }
 .part-name { display:inline; font-size:200%; margin-right:1em; }
 .part-stats { display:inline; }
@@ -19,7 +19,7 @@
 .family { margin-bottom:1em; display:table; }
 .fam-icn { display:inline-block; width:160px; height:90px; }
 .fam-icn img { width:160px; height:90px; }
-.fam-desc { display:table-cell; vertical-align:middle; padding-left:.5em; }
+.fam-desc { display:table-cell; vertical-align:middle; padding-left:.5em; width:100%; }
 .fam-ban { display:inline; }
 .fam-name { display:inline; font-size:200%; margin-right:1em; }
 .fam-theme { display:inline; background:#060; color:#fff; }
@@ -34,7 +34,7 @@
 .show { margin-bottom:1em; display:table; }
 .show-scr { width:160px; height:90px; margin-bottom:2px; cursor:pointer; }
 .show-scr img { width:inherit; height:90px; }
-.show-desc { display:table-cell; vertical-align:middle; padding-left:.5em; }
+.show-desc { display:table-cell; vertical-align:middle; padding-left:.5em; width:100%; }
 .show-name { display:block; font-size:150%; margin-right:1em; }
 .show-name .num { display:inline; }
 .show-name .title { display:inline; }
