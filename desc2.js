@@ -87,6 +87,8 @@ function createPartners (outdir, url, prev, partners) {
 
     let out = ''
     out += `<div class='partner'>`
+    out += `<div class='part-icn'><img src='${part.icon_1024x576.replace('https://media.noco.tv/', nocomedia)}' /></div>`
+    // out += `<div class='part-ban'><img src='${part.banner_partner.replace('https://media.noco.tv/', nocomedia)}' /></div>`
     out += `<div class="part-name" data-id='${part.id_partner}'><a href="${url2}">${part.partner_name}</a></div>\n`
     out += `<div class="part-stats">familles: ${fams.length}; nb emissions: ${shows.length}; durée totale: ${durationHuman}</div>`
     if (part.partner_resume) {

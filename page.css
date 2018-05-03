@@ -1,12 +1,14 @@
 /* recap */
 .recap .access { display:inline; }
-.recap .partner { display:inline; } .recap .part-stats, .recap .part-resume, .recap .part-subtitle { display:none; }
-.recap .family { display:inline; } .recap .fam-icn, .recap .fam-theme, .recap .fam-type, .recap .fam-stats, .recap .fam-resume { display:none; }
+.recap .partner { display:inline; } .recap .part-name, .recap .part-stats, .recap .part-resume, .recap .part-subtitle { display:none; }
+.recap .family { display:inline; } .recap .fam-name, .recap .fam-name-vo, .recap .fam-theme, .recap .fam-type, .recap .fam-stats, .recap .fam-resume { display:none; }
 .recap .year { display:inline; } .recap .year-stats { display:none; }
 
 .access { margin-bottom:1em; }
 .access-name { display:inline; font-size:200%; margin-right:1em; }
 .partner { margin-bottom:1em; }
+.part-icn, .part-ban { display:inline; }
+.part-icn img, .part-ban img { width:10em;}
 .part-name { display:inline; font-size:200%; margin-right:1em; }
 .part-stats { display:inline; }
 .part-resume { display:block; }
