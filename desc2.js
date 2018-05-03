@@ -88,16 +88,17 @@ function createPartners (outdir, url, prev, partners) {
 
     let out = ''
     out += `<div class='partner'>`
-    out += `<div class='part-icn'><img src='${icn}' /></div>`
-    // out += `<div class='part-ban'><img src='${part.banner_partner.replace('https://media.noco.tv/', nocomedia)}' /></div>`
-    out += `<div class="part-name" data-id='${part.id_partner}'><a href="${url2}">${part.partner_name}</a></div>\n`
-    out += `<div class="part-stats">familles: ${fams.length}; nb emissions: ${shows.length}; durée totale: ${durationHuman}</div>`
+    out += `  <div class='part-icn'><img src='${icn}' /></div>`
+    out += `  <div class='part-desc'>`
+    out += `    <div class="part-name" data-id='${part.id_partner}'><a href="${url2}">${part.partner_name}</a></div>\n`
+    out += `    <div class="part-stats">familles: ${fams.length}; nb emissions: ${shows.length}; durée totale: ${durationHuman}</div>`
     if (part.partner_resume) {
-      out += `  <div class='part-resume'>${esc(part.partner_resume)}</div>\n`
+      out += `    <div class='part-resume'>${esc(part.partner_resume)}</div>\n`
     }
     if (part.partner_subtitle) {
-      out += `  <div class='part-subtitle'>${esc(part.partner_subtitle)}</div>\n`
+      out += `    <div class='part-subtitle'>${esc(part.partner_subtitle)}</div>\n`
     }
+    out += '  </div>'
     out += '</div>\n'
     txts.push(out)
 
@@ -127,9 +128,7 @@ function createPartnerFamilies (dir, url, prev, part, fams, partnerShows) {
 
     let out = ''
     out += `<div class='family'>`
-    out += `  <div class='fam-icn'>`
-    out += `    <img src='${icn}' />`
-    out += `  </div>`
+    out += `  <div class='fam-icn'><img src='${icn}' /></div>`
     out += `  <div class='fam-desc'>`
     out += `    <div class='fam-name' data-id='${fam.id_family}'><a href="${url2}">${fam.family_TT}</a></div>\n`
     out += `    <div class='fam-theme'>${theme.theme_name}</div> <div class='fam-type'>${type.type_name}</div>\n`
