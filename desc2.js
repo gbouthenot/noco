@@ -18,6 +18,7 @@ const nocomedia = 'http://static.atomas.com/noco/media.noco.tv/'
 
 patchScreenshots(allshows)
 patchMosaiques(allshows)
+patchFamilies(allfamilies)
 // process.exit(0)
 
 //
@@ -92,7 +93,7 @@ function createPartners (outdir, url, prev, partners) {
 
     let out = ''
     out += `<div class='partner' data-id='${part.id_partner}'>`
-    out += `  <div class='part-icn'><a href="${url2}"><img src='${icn}' /></a></div>`
+    out += `  <a href="${url2}"><div class='part-icn'><img src='${icn}' /></div></a>`
     out += `  <div class='part-desc'>`
     out += `    <div class="part-name">${part.partner_name}</div>\n`
     out += `    <div class="part-stats">familles: ${fams.length}; nb emissions: ${shows.length}; durée totale: ${durationHuman}</div>`
@@ -128,11 +129,18 @@ function createPartnerFamilies (dir, url, prev, part, fams, partnerShows) {
     const durationMs = showsFam.reduce((acc, cur) => acc + cur.duration_ms, 0)
     const durationHuman = formatDurationHuman(durationMs)
     const url2 = `${url}${fam.family_key}/`
-    const icn = `${nocomedia}family_160x90/${part.partner_key.toLowerCase()}/${fam.family_key.toLowerCase()}.jpg`
+    let icn = ''
+    if (fam.icon_1024x576.length) {
+      icn = `${nocomedia}family_160x90/${part.partner_key.toLowerCase()}/${fam.family_key.toLowerCase()}.jpg`
+    }
 
     let out = ''
     out += `<div class='family' data-id='${fam.id_family}'>`
-    out += `  <div class='fam-icn'><a href="${url2}"><img src='${icn}' /></a></div>`
+    out += `  <a href="${url2}"><div class='fam-icn'>`
+    if (icn.length) {
+      out += `    <img src='${icn}' />`
+    }
+    out += `  </div></a>`
     out += `  <div class='fam-desc'>`
     out += `    <div class='fam-name'>${fam.family_TT}</div>\n`
     out += `    <div class='fam-theme'>${theme.theme_name}</div> <div class='fam-type'>${type.type_name}</div>\n`
@@ -172,7 +180,8 @@ function createPartnerFamilyYears (dir, url, prev, part, fam, showsFam) {
 
     let out = ''
     out += `<div class='year'>`
-    out += `<div class='year-name' data-id='${year}'><a href="${url2}">Année ${year}</a></div>\n`
+    out += `<div class='year-txt'>Année </div>`
+    out += `<div class='year-name' data-id='${year}'><a href="${url2}">${year}</a></div>\n`
     out += `<div class="year-stats">${shows.length} émissions, ${dur}</div>`
     out += `</div>\n`
     txts.push(out)
@@ -573,4 +582,16 @@ function patchMosaiques (shows) {
       s.mosaique = ''
     })
   })
+}
+
+function patchFamilies (fams) {
+  // ces familles n'ont pas d'icone ni banner
+  'BOJ DL J-5 KES'.split(' ').forEach(fk => {
+    const fam = fams.find(f => f.family_key === fk)
+    fam.icon_1024x576 = ''
+    fam.banner_family = ''
+  })
+  // cette famille n'a pas d'icone, mais a une banner que j'ai transformé en icone
+  const fam = fams.find(f => f.family_key === 'PLS')
+  fam.icon_1024x576 = 'https://media.noco.tv/family/icon/nol/960x540/pls.jpg'
 }
