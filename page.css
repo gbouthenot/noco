@@ -10,7 +10,7 @@
 .part-icn, .part-ban { display:inline; width:160px; height:90px; }
 .part-ban { display:inline; }
 .part-icn img { width:10em;}
-.part-desc { display:table-cell; vertical-align:middle; padding-left:.5em; }
+.part-desc { display:table-cell; vertical-align:middle; padding-left:.5em; background-image:linear-gradient(#fff 33%,#ccc); }
 .part-ban img { width:10em;}
 .part-name { display:inline; font-size:200%; margin-right:1em; }
 .part-stats { display:inline; }
