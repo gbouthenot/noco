@@ -1,3 +1,9 @@
+/* recap */
+.recap .access { display:inline; }
+.recap .partner { display:inline; } .recap .part-stats, .recap .part-resume, .recap .part-subtitle { display:none; }
+.recap .family { display:inline; } .recap .fam-icn, .recap .fam-theme, .recap .fam-type, .recap .fam-stats, .recap .fam-resume { display:none; }
+.recap .year { display:inline; } .recap .year-stats { display:none; }
+
 .access { margin-bottom:1em; }
 .access-name { display:inline; font-size:200%; margin-right:1em; }
 .partner { margin-bottom:1em; }
@@ -6,6 +12,8 @@
 .part-resume { display:block; }
 .part-subtitle { display:block; }
 .family { margin-bottom:1em; }
+.fam-icn, .fam-ban { display:inline; }
+.fam-icn img, .fam-ban img { width:10em;}
 .fam-name { display:inline; font-size:200%; margin-right:1em; }
 .fam-theme { display:inline; background:#060; color:#fff; }
 .fam-type { display:inline; background:#a0a; color:#fff; }
@@ -25,8 +33,6 @@
 .show-name .key { display:inline; margin-left:1em; color:#aaa; }
 .show-stats { display:block; }
 .show-resume { display:block; }
-.icn, .ban { display:inline; }
-.icn img, .ban img { width:10em;}
 .show-mos { }
 .show-mos .mos { width:160px; height:90px; background-size:1000%; }
 .mos0  .mos { background-position:00.00% 00.00%; }

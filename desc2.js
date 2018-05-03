@@ -44,7 +44,7 @@ function esc (string, indent) {
 }
 
 // script pour ajouter js et css
-function headers () {
+function headers (recap) {
   return `
 <script type='text/javascript'>
 (function () {
@@ -65,6 +65,7 @@ function headers () {
     document.head.appendChild(el)
 })()
 </script>
+<div class='recap'>${recap}</div><hr />
   `
 }
 
@@ -100,7 +101,7 @@ function createPartners (outdir, url, prev, partners) {
     createPartnerFamilies(`${dir}/${part.partner_shortname}`, url2, prev + out, part, fams, shows)
   })
 
-  fs.writeFileSync(`${dir}/index.html`, headers() + prev + '<hr />' + txts.join('\n'))
+  fs.writeFileSync(`${dir}/index.html`, headers(prev) + txts.join('\n'))
 }
 
 // partner : index des familles d'un partner
@@ -122,8 +123,8 @@ function createPartnerFamilies (dir, url, prev, part, fams, partnerShows) {
 
     let out = ''
     out += `<div class='family'>`
-    out += `<div class='icn'><img src='${fam.icon_1024x576.replace('https://media.noco.tv/', nocomedia)}' /></div>`
-    // out += `<div class='ban'><img src='${fam.banner_family.replace('https://media.noco.tv/', nocomedia)}' /></div>`
+    out += `<div class='fam-icn'><img src='${fam.icon_1024x576.replace('https://media.noco.tv/', nocomedia)}' /></div>`
+    // out += `<div class='fam-ban'><img src='${fam.banner_family.replace('https://media.noco.tv/', nocomedia)}' /></div>`
     out += `<div class='fam-name' data-id='${fam.id_family}'><a href="${url2}">${fam.family_TT}</a></div>\n`
     out += `<div class='fam-theme'>${theme.theme_name}</div> <div class='fam-type'>${type.type_name}</div>\n`
     out += `<div class='fam-stats'>${showsFam.length} émissions, ${durationHuman}</div>\n`
@@ -139,7 +140,7 @@ function createPartnerFamilies (dir, url, prev, part, fams, partnerShows) {
     createPartnerFamilyYears(`${dir}/${fam.family_key}`, url2, prev + out, part, fam, showsFam)
   })
 
-  fs.writeFileSync(`${dir}/index.html`, headers() + prev + '<hr />' + txts.join('\n'))
+  fs.writeFileSync(`${dir}/index.html`, headers(prev) + txts.join('\n'))
 }
 
 // partner -> family : index des années
@@ -169,7 +170,7 @@ function createPartnerFamilyYears (dir, url, prev, part, fam, showsFam) {
     createPartnerFamilyYearShows(`${dir}/${year}`, url2, prev + out, part, fam, year, shows)
   })
 
-  fs.writeFileSync(`${dir}/index.html`, headers() + prev + '<hr />' + txts.join('\n'))
+  fs.writeFileSync(`${dir}/index.html`, headers(prev) + txts.join('\n'))
 }
 
 // partner -> family -> year : index des émissions
@@ -227,7 +228,7 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, shows) {
   }
 
   let txts
-  let out = prev + '<hr />'
+  let out = ''
 
   // les émissions qui ont un episode number
   txts = displayShows(shows.filter(_ => _.episode_number !== 0))
@@ -243,8 +244,8 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, shows) {
     out += txts.join('\n')
   }
 
-  fs.writeFileSync(`${dir}/index.html`, headers() + out)
+  fs.writeFileSync(`${dir}/index.html`, headers(prev) + out)
 }
 
-const prev = `<div class='access'><div class='access-name'><a href='by_partner/'>Par partenaire</a></div></div>\n`
+const prev = `<div class='access'><div class='access-name'><a href='by_partner/'>Partenaires</a></div></div>\n`
 createPartners(outdir, 'by_partner/', prev, allpartners)
