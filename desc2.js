@@ -91,10 +91,10 @@ function createPartners (outdir, url, prev, partners) {
     const icn = `${nocomedia}partner_160x90/${part.partner_key.toLowerCase()}.jpg`
 
     let out = ''
-    out += `<div class='partner'>`
-    out += `  <div class='part-icn'><img src='${icn}' /></div>`
+    out += `<div class='partner' data-id='${part.id_partner}'>`
+    out += `  <div class='part-icn'><a href="${url2}"><img src='${icn}' /></a></div>`
     out += `  <div class='part-desc'>`
-    out += `    <div class="part-name" data-id='${part.id_partner}'><a href="${url2}">${part.partner_name}</a></div>\n`
+    out += `    <div class="part-name">${part.partner_name}</div>\n`
     out += `    <div class="part-stats">familles: ${fams.length}; nb emissions: ${shows.length}; durée totale: ${durationHuman}</div>`
     if (part.partner_resume) {
       out += `    <div class='part-resume'>${esc(part.partner_resume)}</div>\n`
@@ -131,10 +131,10 @@ function createPartnerFamilies (dir, url, prev, part, fams, partnerShows) {
     const icn = `${nocomedia}family_160x90/${part.partner_key.toLowerCase()}/${fam.family_key.toLowerCase()}.jpg`
 
     let out = ''
-    out += `<div class='family'>`
-    out += `  <div class='fam-icn'><img src='${icn}' /></div>`
+    out += `<div class='family' data-id='${fam.id_family}'>`
+    out += `  <div class='fam-icn'><a href="${url2}"><img src='${icn}' /></a></div>`
     out += `  <div class='fam-desc'>`
-    out += `    <div class='fam-name' data-id='${fam.id_family}'><a href="${url2}">${fam.family_TT}</a></div>\n`
+    out += `    <div class='fam-name'>${fam.family_TT}</div>\n`
     out += `    <div class='fam-theme'>${theme.theme_name}</div> <div class='fam-type'>${type.type_name}</div>\n`
     out += `    <div class='fam-stats'>${showsFam.length} émissions, ${durationHuman}</div>\n`
     if (fam.family_TT !== fam.family_OT) {
