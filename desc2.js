@@ -127,17 +127,20 @@ function createPartnerFamilies (dir, url, prev, part, fams, partnerShows) {
 
     let out = ''
     out += `<div class='family'>`
-    out += `<div class='fam-icn'><img src='${icn}' /></div>`
-    // out += `<div class='fam-ban'><img src='${fam.banner_family.replace('https://media.noco.tv/', nocomedia)}' /></div>`
-    out += `<div class='fam-name' data-id='${fam.id_family}'><a href="${url2}">${fam.family_TT}</a></div>\n`
-    out += `<div class='fam-theme'>${theme.theme_name}</div> <div class='fam-type'>${type.type_name}</div>\n`
-    out += `<div class='fam-stats'>${showsFam.length} émissions, ${durationHuman}</div>\n`
+    out += `  <div class='fam-icn'>`
+    out += `    <img src='${icn}' />`
+    out += `  </div>`
+    out += `  <div class='fam-desc'>`
+    out += `    <div class='fam-name' data-id='${fam.id_family}'><a href="${url2}">${fam.family_TT}</a></div>\n`
+    out += `    <div class='fam-theme'>${theme.theme_name}</div> <div class='fam-type'>${type.type_name}</div>\n`
+    out += `    <div class='fam-stats'>${showsFam.length} émissions, ${durationHuman}</div>\n`
     if (fam.family_TT !== fam.family_OT) {
-      out += `<div class='fam-name-vo'>${fam.family_OT} (${fam.OT_lang})</div>`
+      out += `    <div class='fam-name-vo'>${fam.family_OT} (${fam.OT_lang})</div>`
     }
     if (fam.family_resume) {
-      out += `<div class='fam-resume'>${fam.family_resume}</div>`
+      out += `    <div class='fam-resume'>${fam.family_resume}</div>`
     }
+    out += `  </div>`
     out += `</div>\n`
     txts.push(out)
 

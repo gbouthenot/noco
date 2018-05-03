@@ -15,8 +15,9 @@
 .part-stats { display:inline; }
 .part-resume { display:block; }
 .part-subtitle { display:block; }
-.family { margin-bottom:1em; }
+.family { margin-bottom:1em; display:table; }
 .fam-icn { display:inline; width:160px; height:90px; }
+.fam-desc { display:table-cell; vertical-align:top; padding-left:.5em; }
 .fam-ban { display:inline; }
 .fam-name { display:inline; font-size:200%; margin-right:1em; }
 .fam-theme { display:inline; background:#060; color:#fff; }
@@ -39,6 +40,7 @@
 .show-resume { display:block; }
 .show-mos { }
 .show-mos .mos { width:160px; height:90px; background-size:1000%; }
+
 .mos0  .mos { background-position:00.00% 00.00%; }
 .mos1  .mos { background-position:11.11% 00.00%; }
 .mos2  .mos { background-position:22.22% 00.00%; }
