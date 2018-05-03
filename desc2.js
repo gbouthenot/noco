@@ -16,7 +16,8 @@ const allpartners = require('./noco-data/partners.json')
 
 const nocomedia = 'http://static.atomas.com/noco/media.noco.tv/'
 
-patch(allshows)
+patchScreenshots(allshows)
+patchMosaiques(allshows)
 // process.exit(0)
 
 //
@@ -263,7 +264,7 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, shows) {
 const prev = `<div class='access'><div class='access-name'><a href='by_partner/'>Partenaires</a></div></div>\n`
 createPartners(outdir, 'by_partner/', prev, allpartners)
 
-function patch(shows) {
+function patchScreenshots (shows) {
   let data = `
     nol/960x540/e/b/CS_S16s17s07n07_170965.jpg
     noco/960x540/9/4/AA_CSAENFANCE_2016_14612.jpg
@@ -519,6 +520,57 @@ function patch(shows) {
         repl = s.screenshot_1024x576.slice(0, 33) + pat
       }
       s.screenshot_1024x576 = repl
+    })
+  })
+}
+
+function patchMosaiques (shows) {
+  let data = `
+    nol/8/e/RM_S17s02_0e028390a91f14db6f040711e47a9312.jpg
+    nol/4/6/CS_S17s02n02_c160374f90a36f61e61325f00f078743.jpg
+    nol/d/1/CU_S17s02n02_NEWS_88e8dab113d12de671bad9a04901007f.jpg
+    nol/b/8/CU_S17s02n02_2eff918b849fd3d0ac2a4e31b6226eca.jpg
+    nol/7/1/56K_S16s19_cb0d292972776caccd468dbfddc07c4c.jpg
+    nol/b/4/TIPS_S14s21_fcac556660e204f49dc60a08232910e3.jpg
+    nol/9/3/DM_S14s21_4fea11981f52c36f57e864fb13aae8e8.jpg
+    nol/2/d/CS_S14s21n01_04d99185a9fa30eaaba332108ae3b9f5.jpg
+    nol/5/6/CU_S14s21n01_fbdcc366da8132788db07f91654f3403.jpg
+    nol/d/f/CS_S14s20n05_9e1c95477ba1adc000c356434aa7a698.jpg
+    nol/9/1/OPL_S14s18_ff8a6f55931f5164e7c45287702709f3.jpg
+    nol/a/5/RM_S14s16n306_d31b72d578324e1fd9faa76e17dfd666.jpg
+    nol/7/e/RM_S14s16n305_d338a7391b6fcf3a835b3bbce8e6fc27.jpg
+    nol/4/0/JET_S14s10xxx_411d4df0c3e4d64f2e8948958311f5fc.jpg
+    nol/a/c/MOS_S14s10_4d702f41ef31a35cbdff039f185a8011.jpg
+    nol/a/4/OPL_S14s09_cbfbdcab47d8e0b13e20f34b9f5bee5f.jpg
+    nol/d/e/PTB_S14s07_aaa653df1b48222125f11727eedc66f0.jpg
+    nol/d/1/CU_S14s05n05_a92be9f3c130a068414a32ce2cd34f89.jpg
+    nol/1/a/CU_S14s05n03_faeb7f422c62467e1718953bd9727f6d.jpg
+    nol/f/a/CU_S14s05n02_c62ea0d2be28dd43591ac6cad44e0fc9.jpg
+    nol/8/2/CU_S14s05n01_11c4ab4d00d32dee2756231a66081184.jpg
+    nol/1/5/CU_S14s04n05_c442e7f44c5c8a4e8504150567fc2af2.jpg
+    oly/6/7/NO_S13s45_deed4c6615894a97d56480a57e6722ca.jpg
+    nol/1/d/AP_TNL_S12s35n25_cb322880957edd922981ec842f968911.jpg
+    nol/5/8/AP_TNL_S12s35n24_c506cbe9244258a84f07e576833e571b.jpg
+    nol/2/9/AP_TNL_S12s35n20_4ed1c7e2c33d90f808150e96e857b328.jpg
+    nol/e/6/AP_TNL_S12s35n19_4edf24e69de9eb8d8a2419603ba36417.jpg
+    nol/d/b/AP_TNL_S12s35n23_52da066c5bb4d215026b644ac754647a.jpg
+    nol/9/f/AP_TNL_S12s35n22_edcb312566784563a8609a51c3fc687b.jpg
+    nol/6/2/AP_TNL_S12s35n18_5e47a39bd69fbd0635241739a71b2b40.jpg
+    nol/a/5/AP_TNL_S12s35n21_9ed1e041a336e8045fa123183923376a.jpg
+    nol/4/3/AP_TNL_S12s35n17_447b20902b018ca3400946b34d1450b3.jpg
+    nol/9/c/AP_TNL_S12s35n14_2c04d4ef39336c30a3d41403a8135659.jpg
+    nol/8/e/AP_TNL_S12s35n13_b08f056acec5baa0345e205c08c76dfc.jpg
+    nol/d/8/AP_TNL_S12s35n15_160cc8856c8416d2397d89bb06321308.jpg
+    nol/d/b/AP_TNL_S12s35n16_ba8e03eeeec0e74fe96538fb00520c2a.jpg
+    nol/6/5/AP_TNL_S12s35n12_85b4957ceb711632f1ed38af2f39a61c.jpg
+    nol/2/4/AP_TNL_S12s35n11_3cc68f7614b5a873956b45cc8a00452b.jpg
+  `
+  data = data.split('\n').map(_ => _.trim()).filter(_ => _.length)
+
+  data.forEach(pat => {
+    const sh = shows.filter(s => s.mosaique.slice(31) === pat)
+    sh.forEach(s => {
+      s.mosaique = ''
     })
   })
 }
