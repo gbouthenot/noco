@@ -84,10 +84,11 @@ function createPartners (outdir, url, prev, partners) {
     const duration = shows.reduce((acc, cur) => acc + cur.duration_ms, 0)
     const durationHuman = formatDurationHuman(duration)
     const url2 = `${url}${part.partner_shortname}/`
+    const icn = `${nocomedia}partner_160x90/${part.partner_key.toLowerCase()}.jpg`
 
     let out = ''
     out += `<div class='partner'>`
-    out += `<div class='part-icn'><img src='${part.icon_1024x576.replace('https://media.noco.tv/', nocomedia)}' /></div>`
+    out += `<div class='part-icn'><img src='${icn}' /></div>`
     // out += `<div class='part-ban'><img src='${part.banner_partner.replace('https://media.noco.tv/', nocomedia)}' /></div>`
     out += `<div class="part-name" data-id='${part.id_partner}'><a href="${url2}">${part.partner_name}</a></div>\n`
     out += `<div class="part-stats">familles: ${fams.length}; nb emissions: ${shows.length}; durée totale: ${durationHuman}</div>`
@@ -122,10 +123,11 @@ function createPartnerFamilies (dir, url, prev, part, fams, partnerShows) {
     const durationMs = showsFam.reduce((acc, cur) => acc + cur.duration_ms, 0)
     const durationHuman = formatDurationHuman(durationMs)
     const url2 = `${url}${fam.family_key}/`
+    const icn = `${nocomedia}family_160x90/${part.partner_key.toLowerCase()}/${fam.family_key.toLowerCase()}.jpg`
 
     let out = ''
     out += `<div class='family'>`
-    out += `<div class='fam-icn'><img src='${fam.icon_1024x576.replace('https://media.noco.tv/', nocomedia)}' /></div>`
+    out += `<div class='fam-icn'><img src='${icn}' /></div>`
     // out += `<div class='fam-ban'><img src='${fam.banner_family.replace('https://media.noco.tv/', nocomedia)}' /></div>`
     out += `<div class='fam-name' data-id='${fam.id_family}'><a href="${url2}">${fam.family_TT}</a></div>\n`
     out += `<div class='fam-theme'>${theme.theme_name}</div> <div class='fam-type'>${type.type_name}</div>\n`
