@@ -206,6 +206,14 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, shows) {
     shows.forEach((show, i) => {
       const dur = formatDurationHuman(show.duration_ms)
       const title = []
+      let sn = ''
+      if (show.season_number) {
+        sn += 'S' + show.season_number
+      }
+      if (show.episode_number) {
+        sn += 'E' + show.episode_number
+      }
+
       // si le nom de la famille est différent, affiche-le
       if (allfamilies.find(_ => _.id_family === show.id_family).family_TT !== show.family_TT) {
         title.push(`${show.family_TT}`)
@@ -231,7 +239,7 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, shows) {
       out += `  </div>`
       out += `  <div class='show-desc'>`
       out += `    <div class='show-name'>`
-      out += `      <div class='num'>#${++i} S${show.season_number}E${show.episode_number}</div>`
+      out += `      <div class='num'>#${++i} ${sn}</div>`
       out += `      <div class='title'>${title.join(' - ')}</div>`
       out += `      <div class='key'>${show.show_key}</div>`
       out += `    </div>`
@@ -256,14 +264,14 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, shows) {
   // les émissions qui ont un episode number
   txts = displayShows(shows.filter(_ => _.episode_number !== 0))
   if (txts.length) {
-    out += '<h1>Épisodes</h1>\n'
+    out += `<h1>${txts.length} épisode(s)</h1>\n`
     out += txts.join('\n')
     out += '<hr />'
   }
   // les autres
   txts = displayShows(shows.filter(_ => _.episode_number === 0))
   if (txts.length) {
-    out += '<h1>Rubriques</h1>\n'
+    out += `<h1>${txts.length} rubrique(s)</h1>\n`
     out += txts.join('\n')
   }
 

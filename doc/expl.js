@@ -291,7 +291,9 @@ nss.map(_=>_.id_show).filter(id=>!shows.find(show=>show.id_show===id)).map(id=>s
 // charger puis:
 // for i in media.noco.tv/screenshot/nol/1024x576/0/a/DM_S18s17_496899.jpg media.noco.tv/screenshot/nol/1024x576/1/2/RP_S18s17n03B_75974.jpg media.noco.tv/screenshot/nol/1024x576/8/3/RP_S18s17n03A_44662.jpg ; do  mkdir -p $(dirname toto/$i) ; convert $i -resize 160x90\! toto/$i ; done
 
+// CORRECTION
 // show:24963: enlever espace dans screenshots et show_key
+// show:12670: screenshots: /0/0/ ->
 
 // nouveaux shows (dans shows_date mais pas dans shows)
 shows_date.map(_=>_.id_show).filter(id=>!shows.find(show=>show.id_show===id));
@@ -303,3 +305,14 @@ shows.map(_=>_.id_show).filter(id=>!shows_date.find(show=>show.id_show===id));
 
 
 // wget --input-file=screenshots.txt --no-verbose --tries=5 --retry-connrefused --no-clobber --wait=10 --random-wait --waitretry=57 --force-directories
+
+
+// Emissions cachées:
+// Classés 18+ affiche 19 émissions sur le site web, mais n'en liste que 18, comme nous.
+// Peut-etre qu'une émission a été supprimé (comme pour Superplay ?)
+shows.filter(_=>_.family_key==='SO18').filter(_=>_.sorting_date_utc.slice(0,4) === '2015').length
+18
+shows.filter(_=>_.family_TT==='Classés 18+').filter(_=>_.sorting_date_utc.slice(0,4) === '2015').length
+18
+shows.filter(_=>_.show_key.slice(0,4)==='SO18').filter(_=>_.broadcast_date_utc.slice(0,4) === '2015').length
+18
