@@ -37,12 +37,13 @@ body { margin:0; }
 .show-scr { width:160px; height:90px; margin-bottom:2px; cursor:pointer; }
 .show-scr img { width:inherit; height:90px; }
 .show-desc { display:table-cell; vertical-align:middle; padding-left:.5em; width:100%; }
+.show-idx { font-size:80%; color:#888; }
 .show-name { display:block; font-size:150%; margin-right:1em; }
 .show-name .num { display:inline; }
 .show-name .title { display:inline; }
-.show-name .key { display:inline; margin-left:1em; color:#aaa; }
-.show-stats { display:block; }
+.show-name .key { display:inline; color:#666; }
 .show-resume { display:block; }
+.show-stats { display:block; color:#666; }
 .show-mos { }
 .show-mos .mos { width:160px; height:90px; background-size:1000%; }
 

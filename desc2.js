@@ -212,6 +212,9 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, shows) {
       }
       if (show.episode_number) {
         sn += 'E' + show.episode_number
+      } else {
+        // pas de numéro d'épisode, met le numéro d'index
+        sn = `#${i + 1} ` + sn
       }
 
       // si le nom de la famille est différent, affiche-le
@@ -221,6 +224,7 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, shows) {
       if (show.show_TT && show.show_TT.length) {
         title.push(`${show.show_TT}`)
       }
+
       let scr = show.screenshot_1024x576
       scr = scr.replace(scrRE, `${nocomedia}screenshot_160x90/$1/160x90/$2`)
       let mos = show.mosaique
@@ -238,8 +242,9 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, shows) {
       }
       out += `  </div>`
       out += `  <div class='show-desc'>`
+      out += `    <div class='show-idx'>#${i + 1}</div>`
       out += `    <div class='show-name'>`
-      out += `      <div class='num'>#${++i} ${sn}</div>`
+      out += `      <div class='num'>${sn}</div>`
       out += `      <div class='title'>${title.join(' - ')}</div>`
       out += `      <div class='key'>${show.show_key}</div>`
       out += `    </div>`
