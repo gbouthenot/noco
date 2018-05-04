@@ -20,16 +20,17 @@ class Mosaique {
     let etp = 0
     let int = null
 
-    delegateEvent(document, "click", ".show", e => {
+    delegateEvent(document, "click", ".show .show-mos, .show .show-scr", e => {
+      const target = e.delTarget.closest(".show")
       if (int) {
         // il y a déjà une alim: l'éteint
         // si on a cliqué sur une autre émission, démarre la nouvelle anim
         off()
-        if (mos !== e.delTarget.querySelector(".show-mos")) {
-          on(e.delTarget)
+        if (mos !== target.querySelector(".show-mos")) {
+          on(target)
         }
       } else {
-        on(e.delTarget)
+        on(target)
       }
     })
 
@@ -48,7 +49,7 @@ class Mosaique {
       }, 250)
     }
 
-    function off (e) {
+    function off () {
       clearInterval(int)
       int = null
 
