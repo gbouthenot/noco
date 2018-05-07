@@ -63,7 +63,9 @@ class Mosaique {
 
 window.addEventListener("load", _ => {
   document.querySelectorAll(".access a, .partner a, .family a, .year a, .show a").forEach(el => {
-    el.href = `${window.baseurl}out/${el.getAttribute("href")}`
+    if (!el.getAttribute("href").match(/^https?:\/\//)) {
+      el.href = `${window.baseurl}out/${el.getAttribute("href")}`
+    }
   })
   new Mosaique().init()
 })
