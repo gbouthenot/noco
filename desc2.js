@@ -64,7 +64,7 @@ const formatDuration = (durationMs) => {
 const getUrl = (ep) => {
   let s = `${ep.episode_number ? ep.episode_number + '-' : ''}${ep.show_TT ? ep.show_TT : ''}`
     .replace(/[']/g, ' ')
-    .replace(/[()! ,+:&\/]/g, '')
+    .replace(/[()! ,+:&/]/g, '')
     .replace(/[ .;]/g, '-')
     .replace(/--+/g, '-')
     .replace(/-$/g, '')
