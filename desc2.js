@@ -42,7 +42,9 @@ const showTypes = [
   }
 ]
 
-const formatDurationHuman = (durationMs) => {
+const totalDuration = (shows) => shows.reduce((acc, cur) => acc + cur.duration_ms, 0)
+
+const formatDuration = (durationMs) => {
   let secs = Math.round(durationMs / 1000)
   const days = Math.floor(secs / 86400)
   secs -= days * 86400
@@ -115,8 +117,7 @@ function createPartners (outdir, url, prev, partners) {
     const fams = allfamilies.filter(_ => _.id_partner === part.id_partner)
       .sort((a, b) => a.family_TT.localeCompare(b.family_TT))
     const shows = allshows.filter(_ => _.id_partner === part.id_partner)
-    const duration = shows.reduce((acc, cur) => acc + cur.duration_ms, 0)
-    const durationHuman = formatDurationHuman(duration)
+    const dur = formatDuration(totalDuration(shows))
     const url2 = `${url}${part.partner_shortname}/`
     const icn = `${nocomedia}partner_160x90/${part.partner_key.toLowerCase()}.jpg`
 
@@ -125,7 +126,7 @@ function createPartners (outdir, url, prev, partners) {
     out += `  <a href="${url2}"><div class='part-icn'><img src='${icn}' /></div></a>`
     out += `  <div class='part-desc'>`
     out += `    <div class="part-name">${part.partner_name}</div>\n`
-    out += `    <div class="part-stats">familles: ${fams.length}; nb emissions: ${shows.length}; durée totale: ${durationHuman}</div>`
+    out += `    <div class="part-stats">familles: ${fams.length}; nb emissions: ${shows.length}; durée totale: ${dur}</div>`
     if (part.partner_resume) {
       out += `    <div class='part-resume'>${esc(part.partner_resume)}</div>\n`
     }
@@ -155,8 +156,7 @@ function createPartnerFamilies (dir, url, prev, part, fams, partnerShows) {
     const showsFam = partnerShows.filter(show => show.id_family === familyId)
     // .sort((a, b) => a.broadcast_date_utc.localeCompare(b.broadcast_date_utc))
 
-    const durationMs = showsFam.reduce((acc, cur) => acc + cur.duration_ms, 0)
-    const durationHuman = formatDurationHuman(durationMs)
+    const dur = formatDuration(totalDuration(showsFam))
     const url2 = `${url}${fam.family_key}/`
     let icn = ''
     if (fam.icon_1024x576.length) {
@@ -173,7 +173,7 @@ function createPartnerFamilies (dir, url, prev, part, fams, partnerShows) {
     out += `  <div class='fam-desc'>`
     out += `    <div class='fam-name'>${fam.family_TT}</div>\n`
     out += `    <div class='fam-theme'>${theme.theme_name}</div> <div class='fam-type'>${type.type_name}</div>\n`
-    out += `    <div class='fam-stats'>${showsFam.length} vidéos, ${durationHuman}</div>\n`
+    out += `    <div class='fam-stats'>${showsFam.length} vidéos, ${dur}</div>\n`
     if (fam.family_TT !== fam.family_OT) {
       out += `    <div class='fam-name-vo'>${fam.family_OT} (${fam.OT_lang})</div>`
     }
@@ -203,8 +203,7 @@ function createPartnerFamilyYears (dir, url, prev, part, fam, showsFam) {
   years.forEach(year => {
     const shows = showsFam.filter(_ => _.sorting_date_utc.slice(0, 4) === year)
       .sort((a, b) => a.sorting_date_utc.localeCompare(b.sorting_date_utc))
-    const duration = shows.reduce((acc, cur) => acc + cur.duration_ms, 0)
-    const dur = formatDurationHuman(duration)
+    const dur = formatDuration(totalDuration(shows))
     const url2 = `${url}${year}/`
 
     let out = ''
@@ -233,7 +232,7 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, shows) {
   const displayShows = (shows) => {
     const txts = []
     shows.forEach((show, i) => {
-      const dur = formatDurationHuman(show.duration_ms)
+      const dur = formatDuration(show.duration_ms)
       const title = []
       let sn = ''
       if (show.season_number) {
@@ -299,8 +298,7 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, shows) {
     const showsf = shows.filter(showType.filter)
     if (showsf.length) {
       const txts = displayShows(showsf)
-      const duration = showsf.reduce((acc, cur) => acc + cur.duration_ms, 0)
-      const dur = formatDurationHuman(duration)
+      const dur = formatDuration(totalDuration(showsf))
       out += `<h1>${showType.name}: ${showsf.length} (${dur})</h1>\n`
       out += txts.join('\n')
       out += '<hr />'
