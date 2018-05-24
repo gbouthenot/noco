@@ -229,67 +229,64 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
   const scrRE = new RegExp('https://media.noco.tv/screenshot/([a-z]+)/[0-9x]*/(.*)')
   const mosRE = new RegExp('https://media.noco.tv/mosaique/')
 
-  const displayShows = (shows) => {
-    const txts = []
-    shows.forEach((show, i) => {
-      const dur = formatDuration(show.duration_ms)
-      const title = []
-      let sn = ''
-      if (show.season_number) {
-        sn += 'S' + show.season_number
-      }
-      if (show.episode_number) {
-        sn += 'E' + show.episode_number
-      } else {
-        // pas de numéro d'épisode, met le numéro d'index
-        sn = `#${i + 1} ` + sn
-      }
+  // appelé par shows.map(formatShow)
+  const formatShow = (show, i) => {
+    const dur = formatDuration(show.duration_ms)
+    const title = []
+    let sn = ''
+    if (show.season_number) {
+      sn += 'S' + show.season_number
+    }
+    if (show.episode_number) {
+      sn += 'E' + show.episode_number
+    } else {
+      // pas de numéro d'épisode, met le numéro d'index
+      sn = `#${i + 1} ` + sn
+    }
 
-      // si le nom de la famille est différent, affiche-le
-      if (allfamilies.find(_ => _.id_family === show.id_family).family_TT !== show.family_TT) {
-        title.push(`${show.family_TT}`)
-      }
-      if (show.show_TT && show.show_TT.length) {
-        title.push(`${show.show_TT}`)
-      }
+    // si le nom de la famille est différent, affiche-le
+    if (allfamilies.find(_ => _.id_family === show.id_family).family_TT !== show.family_TT) {
+      title.push(`${show.family_TT}`)
+    }
+    if (show.show_TT && show.show_TT.length) {
+      title.push(`${show.show_TT}`)
+    }
 
-      let scr = show.screenshot_1024x576
-      scr = scr.replace(scrRE, `${nocomedia}screenshot_160x90/$1/160x90/$2`)
-      let mos = show.mosaique
-      mos = mos.replace(mosRE, `${nocomedia}mosaique/`)
+    let scr = show.screenshot_1024x576
+    scr = scr.replace(scrRE, `${nocomedia}screenshot_160x90/$1/160x90/$2`)
+    let mos = show.mosaique
+    mos = mos.replace(mosRE, `${nocomedia}mosaique/`)
 
-      let out = ''
-      out += `<div class='show' data-id='${show.id_show}'>`
-      out += `  <div class='show-mos' style='display:none;'>`
-      out += `    <div class='mos' style='background-image:url("${mos}");'></div>`
-      out += `    <div class='prog'></div>`
-      out += `  </div>`
-      out += `  <div class='show-scr'>`
-      if (scr.length) {
-        out += `    <img src='${scr}' />`
-      }
-      out += `  </div>`
-      out += `  <div class='show-desc'>`
-      out += `    <div class='show-idx'>#${i + 1}</div>`
-      out += `    <div class='show-name'>`
-      out += `      <div class='num'>${sn}</div>`
-      out += `      <div class='title'>${title.join(' - ')}</div>`
-      out += `      <div class='key'>${show.show_key}</div>`
-      out += `    </div>`
-      if (show.show_resume && show.show_resume.length) {
-        out += `    <div class='show-resume'>${show.show_resume.replace(/\n/g, '\n    ')}</div>\n`
-      }
-      out += `    <div class='show-stats'>`
-      if (show.broadcast_date_utc) {
-        out += `      diffusé le ${show.broadcast_date_utc} -- `
-      }
-      out += `      ${dur} -- <a href="${getUrl(show)}">noco</a>`
-      out += `    </div>\n`
-      out += '  </div>\n'
-      out += '</div>\n'
-      txts.push(out)
-    })
-    return txts
+    let out = ''
+    out += `<div class='show' data-id='${show.id_show}'>`
+    out += `  <div class='show-mos' style='display:none;'>`
+    out += `    <div class='mos' style='background-image:url("${mos}");'></div>`
+    out += `    <div class='prog'></div>`
+    out += `  </div>`
+    out += `  <div class='show-scr'>`
+    if (scr.length) {
+      out += `    <img src='${scr}' />`
+    }
+    out += `  </div>`
+    out += `  <div class='show-desc'>`
+    out += `    <div class='show-idx'>#${i + 1}</div>`
+    out += `    <div class='show-name'>`
+    out += `      <div class='num'>${sn}</div>`
+    out += `      <div class='title'>${title.join(' - ')}</div>`
+    out += `      <div class='key'>${show.show_key}</div>`
+    out += `    </div>`
+    if (show.show_resume && show.show_resume.length) {
+      out += `    <div class='show-resume'>${show.show_resume.replace(/\n/g, '\n    ')}</div>\n`
+    }
+    out += `    <div class='show-stats'>`
+    if (show.broadcast_date_utc) {
+      out += `      diffusé le ${show.broadcast_date_utc} -- `
+    }
+    out += `      ${dur} -- <a href="${getUrl(show)}">noco</a>`
+    out += `    </div>\n`
+    out += '  </div>\n'
+    out += '</div>\n'
+    return out
   }
 
   let out = ''
@@ -297,10 +294,9 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
   showTypes.forEach(showType => {
     const shows = showsYear.filter(showType.filter)
     if (shows.length) {
-      const txts = displayShows(shows)
       const dur = formatDuration(totalDuration(shows))
       out += `<h1>${showType.name}: ${shows.length} (${dur})</h1>\n`
-      out += txts.join('\n')
+      out += shows.map(formatShow).join('\n')
       out += '<hr />'
     }
   })
