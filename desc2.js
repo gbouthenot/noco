@@ -153,10 +153,10 @@ function createPartnerFamilies (dir, url, prev, part, fams, partnerShows) {
     const theme = allthemes.find(_ => _.id_theme === fam.id_theme)
     const type = alltypes.find(_ => _.id_type === fam.id_type)
 
-    const showsFam = partnerShows.filter(show => show.id_family === familyId)
+    const shows = partnerShows.filter(show => show.id_family === familyId)
     // .sort((a, b) => a.broadcast_date_utc.localeCompare(b.broadcast_date_utc))
 
-    const dur = formatDuration(totalDuration(showsFam))
+    const dur = formatDuration(totalDuration(shows))
     const url2 = `${url}${fam.family_key}/`
     let icn = ''
     if (fam.icon_1024x576.length) {
@@ -173,7 +173,7 @@ function createPartnerFamilies (dir, url, prev, part, fams, partnerShows) {
     out += `  <div class='fam-desc'>`
     out += `    <div class='fam-name'>${fam.family_TT}</div>\n`
     out += `    <div class='fam-theme'>${theme.theme_name}</div> <div class='fam-type'>${type.type_name}</div>\n`
-    out += `    <div class='fam-stats'>${showsFam.length} vidéos, ${dur}</div>\n`
+    out += `    <div class='fam-stats'>${shows.length} vidéos, ${dur}</div>\n`
     if (fam.family_TT !== fam.family_OT) {
       out += `    <div class='fam-name-vo'>${fam.family_OT} (${fam.OT_lang})</div>`
     }
@@ -184,24 +184,24 @@ function createPartnerFamilies (dir, url, prev, part, fams, partnerShows) {
     out += `</div>\n`
     txts.push(out)
 
-    createPartnerFamilyYears(`${dir}/${fam.family_key}`, url2, prev + out, part, fam, showsFam)
+    createPartnerFamilyYears(`${dir}/${fam.family_key}`, url2, prev + out, part, fam, shows)
   })
 
   fs.writeFileSync(`${dir}/index.html`, headers(prev) + txts.join('\n'))
 }
 
 // partner -> family : index des années
-function createPartnerFamilyYears (dir, url, prev, part, fam, showsFam) {
+function createPartnerFamilyYears (dir, url, prev, part, fam, familyShows) {
   !fs.existsSync(dir) && fs.mkdirSync(dir)
 
   // Par année, unique, trié
-  let years = showsFam.filter(_ => _.sorting_date_utc).map(_ => _.sorting_date_utc.slice(0, 4))
+  let years = familyShows.filter(_ => _.sorting_date_utc).map(_ => _.sorting_date_utc.slice(0, 4))
   years = [...new Set(years)]
   years = years.sort()
 
   const txts = []
   years.forEach(year => {
-    const shows = showsFam.filter(_ => _.sorting_date_utc.slice(0, 4) === year)
+    const shows = familyShows.filter(_ => _.sorting_date_utc.slice(0, 4) === year)
       .sort((a, b) => a.sorting_date_utc.localeCompare(b.sorting_date_utc))
     const dur = formatDuration(totalDuration(shows))
     const url2 = `${url}${year}/`
@@ -221,7 +221,7 @@ function createPartnerFamilyYears (dir, url, prev, part, fam, showsFam) {
 }
 
 // partner -> family -> year : index des émissions
-function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, shows) {
+function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYear) {
   !fs.existsSync(dir) && fs.mkdirSync(dir)
 
   // TODO: créer une nouvelle colonne = broadcast ou sorting
@@ -295,11 +295,11 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, shows) {
   let out = ''
 
   showTypes.forEach(showType => {
-    const showsf = shows.filter(showType.filter)
-    if (showsf.length) {
-      const txts = displayShows(showsf)
-      const dur = formatDuration(totalDuration(showsf))
-      out += `<h1>${showType.name}: ${showsf.length} (${dur})</h1>\n`
+    const shows = showsYear.filter(showType.filter)
+    if (shows.length) {
+      const txts = displayShows(shows)
+      const dur = formatDuration(totalDuration(shows))
+      out += `<h1>${showType.name}: ${shows.length} (${dur})</h1>\n`
       out += txts.join('\n')
       out += '<hr />'
     }
