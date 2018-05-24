@@ -10,7 +10,8 @@ async function bl (url) {
   console.log(JSON.stringify(resp, undefined, 2))
 }
 
-bl('/shows?elements_per_page=500&page=0')
+bl('/shows?elements_per_page=5000&page=1')
 
 // bl('/shows?elements_per_page=5000&page=0')
 // bl('/types?elements_per_page=5000&type_of=families')
+// Bandes annonces: bl('/shows?elements_per_page=5000&type_key=AP&page=0')

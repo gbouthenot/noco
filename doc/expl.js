@@ -236,6 +236,8 @@ shows.find(_=>_.id_show===4059)
 // show_OT
 // show_TT
 // show_resume
+// type_key
+
 
 // Pour trouver l'URL: (il faut ensuite enlever les accents)
 // plus à jour voir la ligne plus bas
@@ -260,11 +262,12 @@ fs.writeFileSync("screenshots.txt", scr.join('\n'))
 
 // Trouver les nouveaux shows:
 // récupérer bearer
+// URL api: https://api.noco.tv/1.1/documentation/
 // lancer bl():
 // node noco_fetch_api.js() > tmp.json
 // node
-shows = require('./noco-data/shows_full.json'); nss = require('./tmp.json')
-nss.map(_=>_.id_show).filter(id=>!shows.find(show=>show.id_show===id)).map(id=>shows.find(_=>_.id_show===id)).map(_=>[_.id_show, _.family_TT, _.show_TT, _.screenshot_1024x576, _.mosaique])
+shows = require('./noco-data/shows_full.json'); showsDate = require('./noco-data/shows_date2.json')
+showsDate.map(_=>_.id_show).filter(id=>!shows.find(show=>show.id_show===id)).map(id=>shows.find(_=>_.id_show===id)).map(_=>[_.id_show, _.family_TT, _.show_TT, _.screenshot_1024x576, _.mosaique])
 // [ 51809, 51893 ]
 // [ 51947, 51938, 51917, 51923, 51914, 51920, 51911, 51932, 51803 ]
 // zombie: 51923, 51920, 51932
@@ -295,12 +298,12 @@ nss.map(_=>_.id_show).filter(id=>!shows.find(show=>show.id_show===id)).map(id=>s
 // show:24963: enlever espace dans screenshots et show_key
 // show:12670: screenshots: /0/0/ ->
 
-// nouveaux shows (dans shows_date mais pas dans shows)
-shows_date.map(_=>_.id_show).filter(id=>!shows.find(show=>show.id_show===id));
+// nouveaux shows (dans showsDate mais pas dans shows)
+showsDate.map(_=>_.id_show).filter(id=>!shows.find(show=>show.id_show===id));
 [ 51956 ]
 
-// shows supprimés (dans shows mais pas dans shows_date)
-shows.map(_=>_.id_show).filter(id=>!shows_date.find(show=>show.id_show===id));
+// shows supprimés (dans shows mais pas dans showsDate)
+shows.map(_=>_.id_show).filter(id=>!showsDate.find(show=>show.id_show===id));
 [ 7283 ] // superplay damdam
 
 
