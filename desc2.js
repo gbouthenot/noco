@@ -27,6 +27,21 @@ patchFamilies(allfamilies)
 // Fonctions utilitaires
 //
 
+const showTypes = [
+  {
+    name: 'Épisodes',
+    filter: _ => _.episode_number !== 0 && _.type_key !== 'AP'
+  },
+  {
+    name: 'Rubriques',
+    filter: _ => _.episode_number === 0 && _.type_key !== 'AP'
+  },
+  {
+    name: 'Bandes-annonces',
+    filter: _ => _.type_key === 'AP'
+  }
+]
+
 const formatDurationHuman = (durationMs) => {
   let secs = Math.round(durationMs / 1000)
   const days = Math.floor(secs / 86400)
@@ -158,7 +173,7 @@ function createPartnerFamilies (dir, url, prev, part, fams, partnerShows) {
     out += `  <div class='fam-desc'>`
     out += `    <div class='fam-name'>${fam.family_TT}</div>\n`
     out += `    <div class='fam-theme'>${theme.theme_name}</div> <div class='fam-type'>${type.type_name}</div>\n`
-    out += `    <div class='fam-stats'>${showsFam.length} émissions, ${durationHuman}</div>\n`
+    out += `    <div class='fam-stats'>${showsFam.length} vidéos, ${durationHuman}</div>\n`
     if (fam.family_TT !== fam.family_OT) {
       out += `    <div class='fam-name-vo'>${fam.family_OT} (${fam.OT_lang})</div>`
     }
@@ -196,7 +211,7 @@ function createPartnerFamilyYears (dir, url, prev, part, fam, showsFam) {
     out += `<div class='year'>`
     out += `<div class='year-txt'>Année </div>`
     out += `<div class='year-name' data-id='${year}'><a href="${url2}">${year}</a></div>\n`
-    out += `<div class="year-stats">${shows.length} émissions, ${dur}</div>`
+    out += `<div class="year-stats">${shows.length} vidéos, ${dur}</div>`
     out += `</div>\n`
     txts.push(out)
 
@@ -278,28 +293,19 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, shows) {
     return txts
   }
 
-  let txts
   let out = ''
 
-  // les émissions qui ont un episode number
-  txts = displayShows(shows.filter(_ => _.episode_number !== 0 && _.type_key !== 'AP'))
-  if (txts.length) {
-    out += `<h1>${txts.length} épisode(s)</h1>\n`
-    out += txts.join('\n')
-    out += '<hr />'
-  }
-  // les émissions sans episode number
-  txts = displayShows(shows.filter(_ => _.episode_number === 0 && _.type_key !== 'AP'))
-  if (txts.length) {
-    out += `<h1>${txts.length} rubrique(s)</h1>\n`
-    out += txts.join('\n')
-  }
-  // les bandes-annonces
-  txts = displayShows(shows.filter(_ => _.type_key === 'AP'))
-  if (txts.length) {
-    out += `<h1>${txts.length} bande(s)-annonce(s)</h1>\n`
-    out += txts.join('\n')
-  }
+  showTypes.forEach(showType => {
+    const showsf = shows.filter(showType.filter)
+    if (showsf.length) {
+      const txts = displayShows(showsf)
+      const duration = showsf.reduce((acc, cur) => acc + cur.duration_ms, 0)
+      const dur = formatDurationHuman(duration)
+      out += `<h1>${showType.name}: ${showsf.length} (${dur})</h1>\n`
+      out += txts.join('\n')
+      out += '<hr />'
+    }
+  })
 
   fs.writeFileSync(`${dir}/index.html`, headers(prev) + out)
 }
