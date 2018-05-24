@@ -45,15 +45,15 @@ const formatDurationHuman = (durationMs) => {
 }
 
 const getUrl = (ep) => {
-  let s = `${ep.partner_shortname}/${ep.family_TT}/${ep.episode_number ? ep.episode_number + '-' : ''}${ep.show_TT ? ep.show_TT : ''}`
+  let s = `${ep.episode_number ? ep.episode_number + '-' : ''}${ep.show_TT ? ep.show_TT : ''}`
     .replace(/[']/g, ' ')
-    .replace(/[()! ,+:&]/g, '')
+    .replace(/[()! ,+:&\/]/g, '')
     .replace(/[ .;]/g, '-')
     .replace(/--+/g, '-')
     .replace(/-$/g, '')
     .toLowerCase()
   s = removeAccents(s)
-  return `https://noco.tv/emission/${ep.id_show}/${s}`
+  return `https://noco.tv/emission/${ep.partner_shortname}/${ep.family_TT}/${ep.id_show}/${s}`
 }
 
 // TODO: escape HTML entities
@@ -282,16 +282,22 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, shows) {
   let out = ''
 
   // les émissions qui ont un episode number
-  txts = displayShows(shows.filter(_ => _.episode_number !== 0))
+  txts = displayShows(shows.filter(_ => _.episode_number !== 0 && _.type_key !== 'AP'))
   if (txts.length) {
     out += `<h1>${txts.length} épisode(s)</h1>\n`
     out += txts.join('\n')
     out += '<hr />'
   }
-  // les autres
-  txts = displayShows(shows.filter(_ => _.episode_number === 0))
+  // les émissions sans episode number
+  txts = displayShows(shows.filter(_ => _.episode_number === 0 && _.type_key !== 'AP'))
   if (txts.length) {
     out += `<h1>${txts.length} rubrique(s)</h1>\n`
+    out += txts.join('\n')
+  }
+  // les bandes-annonces
+  txts = displayShows(shows.filter(_ => _.type_key === 'AP'))
+  if (txts.length) {
+    out += `<h1>${txts.length} bande(s)-annonce(s)</h1>\n`
     out += txts.join('\n')
   }
 
@@ -303,6 +309,7 @@ createPartners(outdir, 'by_partner/', prev, allpartners)
 
 function patchScreenshots (shows) {
   let data = `
+    noco/960x540/c/8/AP_nolife_01.jpg
     nol/960x540/e/b/CS_S16s17s07n07_170965.jpg
     noco/960x540/9/4/AA_CSAENFANCE_2016_14612.jpg
     nol/960x540/6/c/CU_S15s38n02_3461875.jpg
