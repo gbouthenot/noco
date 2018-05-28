@@ -241,12 +241,12 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
     if (nocodata.families.find(_ => _.id_family === show.id_family).family_TT !== show.family_TT) {
       title.push(`${show.family_TT}`)
     }
-    if (show.show_TT && show.show_TT.length) {
-      title.push(`${show.show_TT}`)
+    if (show.show_TT && show.show_TT.toString().length) {
+      title.push(`${show.show_TT.toString()}`)
     }
 
     let scr = show.screenshot_1024x576
-    scr = scr.replace(scrRE, `${nocomedia}screenshot_160x90/$1/160x90/$2`)
+    scr = scr.replace(scrRE, `${nocomedia}screenshot_160x90/$1/$2`)
     let mos = show.mosaique
     mos = mos.replace(mosRE, `${nocomedia}mosaique/`)
 
