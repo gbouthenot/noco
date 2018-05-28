@@ -1,5 +1,6 @@
 dependencies:
   node-fetch: 2.1.2
+  remove-accents-diacritics: 1.0.2
 packages:
   /node-fetch/2.1.2:
     dev: false
@@ -7,8 +8,13 @@ packages:
       node: 4.x || >=6.0.0
     resolution:
       integrity: sha1-q4hOjn5X44qUR1POxwb3iNF2i7U=
+  /remove-accents-diacritics/1.0.2:
+    dev: false
+    resolution:
+      integrity: sha1-Na7hB31qnVAKkbUjvWsMwbxOXeE=
 registry: 'https://registry.npmjs.org/'
 shrinkwrapMinorVersion: 4
 shrinkwrapVersion: 3
 specifiers:
   node-fetch: ^2.1.2
+  remove-accents-diacritics: ^1.0.2
