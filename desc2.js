@@ -247,6 +247,7 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
 
     let scr = show.screenshot_1024x576
     scr = scr.replace(scrRE, `${nocomedia}screenshot_160x90/$1/$2`)
+      .replace('https://media.noco.tv/family/icon/', `${nocomedia}family/icon/`)
     let mos = show.mosaique
     mos = mos.replace(mosRE, `${nocomedia}mosaique/`)
 
