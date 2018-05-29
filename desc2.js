@@ -195,7 +195,7 @@ function createPartnerFamilyYears (dir, url, prev, part, fam, familyShows) {
   const txts = []
   years.forEach(year => {
     const shows = familyShows.filter(_ => _.sorting_date_utc.slice(0, 4) === year)
-      .sort((a, b) => a.sorting_date_utc.localeCompare(b.sorting_date_utc))
+      .sort((a, b) => (a.sorting_date_utc + a.show_key).localeCompare(b.sorting_date_utc + b.show_key))
     const dur = formatDuration(totalDuration(shows))
     const url2 = `${url}${year}/`
 
