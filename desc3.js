@@ -245,15 +245,16 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
     }
 
     let scr = ''
+    const parsl = part[nd.PA.partner_key].toLowerCase()
     if (show[nd.SH.screenshot]) {
       scr = show[nd.SH.screenshot]
-      if (show[nd.SH.screenshot][0] === '/') {
-        scr = `${nocomedia}family/icon${scr}.jpg`
-      } else if (show[nd.SH.screenshot].indexOf('https://') !== 0) {
-        scr = `${nocomedia}screenshot_160x90/${scr}.jpg`
+      if (scr[0] === '/') {
+        scr = `${nocomedia}family/icon/${parsl}${scr}.jpg`
+      } else if (scr.indexOf('https://') !== 0) {
+        scr = `${nocomedia}screenshot_160x90/${parsl}/${scr}.jpg`
       }
     }
-    let mos = show[nd.SH.mosaique] ? `${nocomedia}mosaique/${show[nd.SH.mosaique]}.jpg` : ''
+    let mos = show[nd.SH.mosaique] ? `${nocomedia}mosaique/${parsl}/${show[nd.SH.mosaique]}.jpg` : ''
 
     let out = ''
     out += `<div class='show' data-id='${show[nd.SH.id_show]}'>`

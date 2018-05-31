@@ -41,10 +41,10 @@ const shows = nocodata.shows.sort((a, b) => (a.sorting_date_utc + a.show_key).lo
   _.episode_number,
   _.family_TT,
   _.show_TT && _.show_TT.toString().length ? _.show_TT.toString() : '',
-  (_.screenshot_1024x576.indexOf('https://media.noco.tv/screenshot/') === 0 ? _.screenshot_1024x576.replace('https://media.noco.tv/screenshot/', '').replace(/\/\d{1,4}x\d{3}\//, '/')
-    : _.screenshot_1024x576.indexOf('https://media.noco.tv/family/icon/') === 0 ? _.screenshot_1024x576.replace('https://media.noco.tv/family/icon', '') : _.screenshot_1024x576)
+  (_.screenshot_1024x576.indexOf('https://media.noco.tv/screenshot/') === 0 ? _.screenshot_1024x576.replace(/^https:\/\/media.noco.tv\/screenshot\/[a-z]{3,4}\/\d{1,4}x\d{3}\//, '')
+    : _.screenshot_1024x576.indexOf('https://media.noco.tv/family/icon/') === 0 ? _.screenshot_1024x576.replace(/^https:\/\/media.noco.tv\/family\/icon\/[a-z]{3,4}\//, '/') : _.screenshot_1024x576)
     .replace(/\.jpg$/, ''),
-  _.mosaique.replace('https://media.noco.tv/mosaique/', '').replace(/\/\d{1,4}x\d{3}\//, '/').replace(/\.jpg$/, ''),
+  _.mosaique.replace(/^https:\/\/media.noco.tv\/mosaique\/[a-z]{3,4}\//, '').replace(/\.jpg$/, ''),
   _.duration_ms,
   parseInt(_.sorting_date_utc.slice(2, 4)),
   _.broadcast_date_utc && _.broadcast_date_utc.length ? parseInt(_.broadcast_date_utc.slice(2).replace(/[: -]/g, '')) : 0
@@ -90,3 +90,5 @@ fs.writeFileSync('noco-small.json', JSON.stringify(newdata, null, 0))
 //   [ 4, 134 ],
 //   [ 9, 68 ],
 //   [ 24, 121 ] ]
+// vérification que les mosaiques/screenshots commencencent toutes par "partner_key/" ou "/partner_key/":
+// parfamshows.map(p=>[p[0], [...new Set(p[1].map(s => s[nd.SH.mosaique].slice(0,5)))]])
