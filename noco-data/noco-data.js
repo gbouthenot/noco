@@ -7,11 +7,17 @@
 
   // LR_S15s37...WELCOMTOJAP -> WELCOMTOJAPAN
   // Il faut aussi changer la mosaique associée !
-  // nol/0/f/LR_S15s37_JE16_DIMANCHE_n02_WELCOMETOJAPAN_9282cfd50fb121d7ea9135456bb76a70.jpg
   function patchShows (shows) {
-    const show = shows.find(s => s.id_show === 22573)
+    let show
+
+    // nol/0/f/LR_S15s37_JE16_DIMANCHE_n02_WELCOMETOJAPAN_9282cfd50fb121d7ea9135456bb76a70.jpg
+    show = shows.find(s => s.id_show === 22573)
     show.show_key += 'AN'
     show.mosaique = show.mosaique.replace('_WELCOMETOJAP_', '_WELCOMETOJAPAN_')
+
+    // 8/d/VAC_LR AJIKAN_689883edfc07ff723b7b8910220e9c31.jpg -> enleve espace
+    show = shows.find(s => s.id_show === 24963)
+    show.mosaique = show.mosaique.replace('VAC_LR AJIKAN', 'VAC_LRAJIKAN')
   }
 
   function patchScreenshots (shows) {
