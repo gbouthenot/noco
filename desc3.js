@@ -251,7 +251,8 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
       if (scr[0] === '/') {
         scr = `${nocomedia}family/icon/${parsl}${scr}.jpg`
       } else if (scr.indexOf('https://') !== 0) {
-        scr = `${nocomedia}screenshot_160x90/${parsl}/${scr}.jpg`
+        let shk = show[nd.SH.scrkey] ? show[nd.SH.scrkey] : show[nd.SH.show_key]
+        scr = `${nocomedia}screenshot_160x90/${parsl}/${scr.slice(0, 3)}/${shk}${scr.slice(4)}.jpg`
       }
     }
     let mos = show[nd.SH.mosaique] ? `${nocomedia}mosaique/${parsl}/${show[nd.SH.mosaique]}.jpg` : ''
