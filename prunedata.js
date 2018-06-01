@@ -115,13 +115,21 @@ function patchScreenshots (shows) {
     }
     show[nd.SH.screenshot] = show[nd.SH.screenshot].replace(/([0-9a-z])\/([0-9a-z])\/_?(.*)/, '$1$2$3')
   })
-  // def.forEach(d => {
-  //   const show = shows.find(s => s[0] === d[0])
-  //   if (!show) { throw new Error('cannot find show') }
-  //   console.log(show[nd.SH.screenshot], d[2], show[nd.SH.show_key])
-  // })
 }
+
 patchScreenshots(shows)
+
+function dedupMosaiques (shows) {
+  shows.forEach(show => {
+    let scr = show[nd.SH.mosaique]
+    if (scr === '') { return }
+    scr = scr.replace(show[nd.SH.show_key] + '_', '')
+      .replace(/([0-9a-z])\/([0-9a-z])\/_?(.*)/, '$1$2$3')
+    show[nd.SH.mosaique] = scr
+  })
+}
+
+dedupMosaiques(shows)
 
 const fs = require('fs')
 fs.writeFileSync('noco-small.json', JSON.stringify(nd, null, 0))
@@ -149,3 +157,6 @@ fs.writeFileSync('noco-small.json', JSON.stringify(nd, null, 0))
 
 // les screenshots qui ne correpondent pas avec show_key:
 // nosmall.shows.filter(_=>_[9]!=="" && _[9][0]!=='/').map(_=>[_[0], _[9], _[1], _[9].indexOf(_[1])]).filter(_=>_[3]!==4)
+// les mosaiques qui ne correspondent pas avec show_key:
+// nosmall.shows.filter(_=>_[11]!=="").map(_=>[_[0], _[11], _[1], _[11].indexOf(_[1]+'_')]).filter(_=>_[3]!==4)
+// [ [ 24963, '8/d/VAC_LR AJIKAN_689883edfc07ff723b7b8910220e9c31', 'VAC_LRAJIKAN', -1 ] ]

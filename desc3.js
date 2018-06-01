@@ -258,7 +258,10 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
         scr = `${nocomedia}screenshot_160x90/${parsl}/${scr[0]}/${scr[1]}/${shk}${scr.slice(2)}.jpg`
       }
     }
-    let mos = show[nd.SH.mosaique] ? `${nocomedia}mosaique/${parsl}/${show[nd.SH.mosaique]}.jpg` : ''
+    let mos = show[nd.SH.mosaique]
+    if (mos) {
+      mos = `${nocomedia}mosaique/${parsl}/${mos[0]}/${mos[1]}/${show[nd.SH.show_key]}_${mos.slice(2)}.jpg`
+    }
 
     let out = ''
     out += `<div class='show' data-id='${show[nd.SH.id_show]}'>`
