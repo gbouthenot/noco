@@ -5,6 +5,15 @@
   const types = require('./types.json')
   const partners = require('./partners.json')
 
+  // LR_S15s37...WELCOMTOJAP -> WELCOMTOJAPAN
+  // Il faut aussi changer la mosaique associée !
+  // nol/0/f/LR_S15s37_JE16_DIMANCHE_n02_WELCOMETOJAPAN_9282cfd50fb121d7ea9135456bb76a70.jpg
+  function patchShows (shows) {
+    const show = shows.find(s => s.id_show === 22573)
+    show.show_key += 'AN'
+    show.mosaique = show.mosaique.replace('_WELCOMETOJAP_', '_WELCOMETOJAPAN_')
+  }
+
   function patchScreenshots (shows) {
     let data = `
       noco/960x540/c/8/AP_nolife_01.jpg
@@ -331,6 +340,7 @@
 
   patchScreenshots(shows)
   patchMosaiques(shows)
+  patchShows(shows)
   patchFamilies(families)
 
   module.exports = { shows, families, themes, types, partners }
