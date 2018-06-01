@@ -252,6 +252,9 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
         scr = `${nocomedia}family/icon/${parsl}${scr}.jpg`
       } else if (scr.indexOf('https://') !== 0) {
         let shk = show[nd.SH.scrkey] ? show[nd.SH.scrkey] : show[nd.SH.show_key]
+        if (scr.length !== 4) {
+          shk += '_'
+        }
         scr = `${nocomedia}screenshot_160x90/${parsl}/${scr.slice(0, 3)}/${shk}${scr.slice(4)}.jpg`
       }
     }

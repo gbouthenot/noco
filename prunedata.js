@@ -107,10 +107,11 @@ function patchScreenshots (shows) {
     const idx = scr.indexOf(show[nd.SH.show_key])
     if (idx === 4) {
       show[nd.SH.screenshot] = scr.replace(show[nd.SH.show_key], '')
+        .replace(/([0-9a-z])\/([0-9a-z])\/_?(.*)/, '$1/$2/$3')
     } else {
       const patch = def.find(_ => _[0] === show[0])
       if (!patch) { throw new Error(`cannot find show patch for ${show[0]}`) }
-      show[nd.SH.screenshot] = scr.replace(patch[1], '')
+      show[nd.SH.screenshot] = scr.replace(`${patch[1]}_`, '')
       show[nd.SH.scrkey] = patch[1]
     }
   })
