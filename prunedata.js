@@ -131,9 +131,36 @@ function dedupMosaiques (shows) {
 
 dedupMosaiques(shows)
 
+// Supprime le début de show_key quand il est identique à family_key
+function dedupShowKeys (families, allshows) {
+  families.forEach(f => {
+    const fid = f[nd.FA.id_family]
+    const fkey = f[nd.FA.family_key]
+    let shows
+    shows = allshows.filter(s => s[nd.SH.id_family] === fid && s[nd.SH.id_type] !== 4)
+    shows.forEach(show => {
+      const skey = show[nd.SH.show_key]
+      if (skey.indexOf(fkey + '_') !== 0) {
+        console.log(`exception ${skey} ${fkey}`)
+      }
+    })
+    // les BA
+    shows = allshows.filter(s => s[nd.SH.id_family] === fid && s[nd.SH.id_type] === 4)
+    shows.forEach(show => {
+      const skey = show[nd.SH.show_key]
+      if (skey.indexOf('AP_') !== 0) {
+        throw new Error(`AP: show key does not begin with AP_`)
+      }
+      show[nd.SH.show_key] = skey.replace(/^AP_/, '')
+    })
+  })
+}
+
+dedupShowKeys(families, shows)
+
 const fs = require('fs')
 fs.writeFileSync('noco-small.json', JSON.stringify(nd, null, 0))
-// fs.writeFileSync('noco-small-2.json', JSON.stringify(nd, null, 2))
+fs.writeFileSync('noco-small-2.json', JSON.stringify(nd, null, 2))
 
 //
 // famshows=nosmall.families.map(f => nosmall.shows.filter(s => s[nd.SH.id_family] === f[nd.FA.id_family]))

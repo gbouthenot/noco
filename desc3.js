@@ -245,13 +245,14 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
     }
 
     let scr = ''
+    const skey = show[nd.SH.id_type] === 4 ? `AP_${show[nd.SH.show_key]}` : show[nd.SH.show_key]
     const parsl = part[nd.PA.partner_key].toLowerCase()
     if (show[nd.SH.screenshot]) {
       scr = show[nd.SH.screenshot]
       if (scr[0] === '/') {
         scr = `${nocomedia}family/icon/${parsl}${scr}.jpg`
       } else if (scr.indexOf('https://') !== 0) {
-        let shk = show[nd.SH.scrkey] ? show[nd.SH.scrkey] : show[nd.SH.show_key]
+        let shk = show[nd.SH.scrkey] ? show[nd.SH.scrkey] : skey
         if (scr.length !== 2) {
           shk += '_'
         }
@@ -260,7 +261,7 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
     }
     let mos = show[nd.SH.mosaique]
     if (mos) {
-      mos = `${nocomedia}mosaique/${parsl}/${mos[0]}/${mos[1]}/${show[nd.SH.show_key]}_${mos.slice(2)}.jpg`
+      mos = `${nocomedia}mosaique/${parsl}/${mos[0]}/${mos[1]}/${skey}_${mos.slice(2)}.jpg`
     }
 
     let out = ''
@@ -279,7 +280,7 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
     out += `    <div class='show-name'>`
     out += `      <div class='num'>${sn}</div>`
     out += `      <div class='title'>${title.join(' - ')}</div>`
-    out += `      <div class='key'>${show[nd.SH.show_key]}</div>`
+    out += `      <div class='key'>${skey}</div>`
     out += `    </div>`
     if (show[nd.SH.show_resume]) {
       out += `    <div class='show-resume'>${show[nd.SH.show_resume].replace(/\n/g, '\n    ')}</div>\n`
