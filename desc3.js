@@ -245,7 +245,9 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
     }
 
     let scr = ''
-    const skey = show[nd.SH.id_type] === 4 ? `AP_${show[nd.SH.show_key]}` : show[nd.SH.show_key]
+    const skey = show[nd.SH.id_type] === 4 ? `AP_${show[nd.SH.show_key]}`
+      : show[nd.SH.show_key][0] === '_' ? show[nd.SH.show_key].slice(1)
+        : `${fam[nd.FA.family_key]}_${show[nd.SH.show_key]}`
     const parsl = part[nd.PA.partner_key].toLowerCase()
     if (show[nd.SH.screenshot]) {
       scr = show[nd.SH.screenshot]

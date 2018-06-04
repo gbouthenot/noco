@@ -135,13 +135,21 @@ dedupMosaiques(shows)
 function dedupShowKeys (families, allshows) {
   families.forEach(f => {
     const fid = f[nd.FA.id_family]
-    const fkey = f[nd.FA.family_key]
+    const fkey = f[nd.FA.family_key] + '_'
     let shows
+    // les shows normaux:
+    // si show_key commence par `${family_key}_`: enlève ce préfixe
+    // sinon, fait précéder show_key par '_'
     shows = allshows.filter(s => s[nd.SH.id_family] === fid && s[nd.SH.id_type] !== 4)
     shows.forEach(show => {
       const skey = show[nd.SH.show_key]
-      if (skey.indexOf(fkey + '_') !== 0) {
-        console.log(`exception ${skey} ${fkey}`)
+      if (skey.indexOf(fkey) === 0) {
+        show[nd.SH.show_key] = show[nd.SH.show_key].slice(fkey.length)
+        if (show[nd.SH.show_key][0] === '_') {
+          throw new Error(`show_key=${skey} has multiple _`)
+        }
+      } else {
+        show[nd.SH.show_key] = `_${show[nd.SH.show_key]}`
       }
     })
     // les BA
