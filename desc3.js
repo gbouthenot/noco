@@ -56,7 +56,7 @@ const formatDuration = (durationMs) => {
   }
 }
 
-const getUrl = (ep, pa) => {
+const getUrl = (ep, pa, famtt) => {
   let s = `${ep[nd.SH.episode_number] ? ep[nd.SH.episode_number] + '-' : ''}${ep[nd.SH.show_TT] ? ep[nd.SH.show_TT] : ''}`
     .replace(/[']/g, ' ')
     .replace(/[()! ,+:&/]/g, '')
@@ -65,7 +65,7 @@ const getUrl = (ep, pa) => {
     .replace(/-$/g, '')
     .toLowerCase()
   s = removeAccents.remove(s)
-  return `https://noco.tv/emission/${pa[nd.PA.partner_shortname]}/${ep[nd.SH.family_TT]}/${ep[nd.SH.id_show]}/${s}`
+  return `https://noco.tv/emission/${pa[nd.PA.partner_shortname]}/${famtt}/${ep[nd.SH.id_show]}/${s}`
 }
 
 // TODO: escape HTML entities
@@ -237,11 +237,13 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
     }
 
     // si le nom de la famille est différent, affiche-le
-    if (nd.families.find(_ => _[nd.FA.id_family] === show[nd.SH.id_family])[nd.FA.family_TT] !== show[nd.SH.family_TT]) {
-      title.push(`${show[nd.SH.family_TT]}`)
+    let famtt = fam[nd.FA.family_TT]
+    if (show[nd.SH.family_TT]) {
+      famtt = show[nd.SH.family_TT]
+      title.push(famtt)
     }
     if (show[nd.SH.show_TT]) {
-      title.push(`${show[nd.SH.show_TT]}`)
+      title.push(show[nd.SH.show_TT])
     }
 
     let scr = ''
@@ -294,7 +296,7 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
       d = (parseInt(d.slice(0.2)) > 18 ? '19' : '20') + d
       out += `      diffusé le ${d} -- `
     }
-    out += `      ${dur} -- <a href="${getUrl(show, part)}">noco</a>`
+    out += `      ${dur} -- <a href="${getUrl(show, part, famtt)}">noco</a>`
     out += `    </div>\n`
     out += '  </div>\n'
     out += '</div>\n'

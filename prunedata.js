@@ -39,7 +39,7 @@ const shows = nocodata.shows.sort((a, b) => (a.sorting_date_utc + a.show_key).lo
   _.show_resume && _.show_resume.length ? _.show_resume : '',
   _.season_number,
   _.episode_number,
-  _.family_TT,
+  _.family_TT === nocodata.families.find(f => f.id_family === _.id_family).family_TT ? '' : _.family_TT,
   _.show_TT && _.show_TT.toString().length ? _.show_TT.toString() : '',
   (_.screenshot_1024x576.indexOf('https://media.noco.tv/screenshot/') === 0 ? _.screenshot_1024x576.replace(/^https:\/\/media.noco.tv\/screenshot\/[a-z]{3,4}\/\d{1,4}x\d{3}\/([0-9a-z])\/([0-9a-z])\//, '$1/$2/')
     : _.screenshot_1024x576.indexOf('https://media.noco.tv/family/icon/') === 0 ? _.screenshot_1024x576.replace(/^https:\/\/media.noco.tv\/family\/icon\/[a-z]{3,4}\//, '/') : _.screenshot_1024x576)
