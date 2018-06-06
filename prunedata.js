@@ -182,6 +182,37 @@ function dedupShowKeys (families, allshows) {
 }
 dedupShowKeys(families, shows)
 
+// Supprime le numéro de saison au début de show_key. A faire
+// après "Supprime le début de show_key quand il est identique à family_key"
+function dedupSeason (families, allshows) {
+  const restoreDate = (a) => {
+    a = ('00000000000' + a).slice(-12)
+    a = a.replace(/^(\d\d)(\d\d)/, '$1-$2')
+    a = (parseInt(a) > 18 ? '19' : '20') + a
+    return a
+  }
+
+  allshows.forEach(show => {
+    const date = restoreDate(show[nd.SH.broadcast_date_utc])
+    if (parseInt(date) >= 2013) {
+      const prefix = 'S' + date.slice(2, 4)
+      if (show[nd.SH.show_key].indexOf(prefix) === 0) {
+        show[nd.SH.show_key] = show[nd.SH.show_key].slice(3)
+      } else if (show[nd.SH.show_key][0] === '-') {
+        throw new Error('show_key begin with -')
+      } else {
+        show[nd.SH.show_key] = '-' + show[nd.SH.show_key]
+      }
+    }
+  })
+}
+dedupSeason(families, shows)
+
+// d'abord 2013 à 2018
+
+// TODO: ne faire que partner NOLIFE
+// TODO: 2007 à 2012
+
 const fs = require('fs')
 fs.writeFileSync('noco-small.json', JSON.stringify(nd, null, 0))
 fs.writeFileSync('noco-small-2.json', JSON.stringify(nd, null, 2))
