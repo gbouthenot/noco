@@ -266,16 +266,19 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
     }
 
     let showtt = show[nd.SH.show_TT]
-    if (showtt === '' && [3, 413].includes(show[nd.SH.id_family])) {
-      const dow = 'Dimanche,Lundi,Mardi,Mercredi,Jeudi,Vendredi,Samedi'
-      const months = 'janvier,février,mars,avril,mai,juin,juillet,aout,septembre,octobre,novembre,décembre'
-      let a = new Date(broadcastDate)
-      const datnew = dow.split(',')[a.getDay()] + ' ' +
-        a.getDate().toString().replace(/^1$/, '1er') + ' ' + months.split(',')[a.getMonth()] +
-        ' ' + a.getFullYear()
-      showtt = datnew
-    } else if (showtt === '_') {
-      showtt = ''
+    // pour "101%"" et "le Continue de l'info"
+    if ([3, 413].includes(show[nd.SH.id_family])) {
+      if (showtt === '') {
+        const dow = 'Dimanche,Lundi,Mardi,Mercredi,Jeudi,Vendredi,Samedi'
+        const months = 'janvier,février,mars,avril,mai,juin,juillet,aout,septembre,octobre,novembre,décembre'
+        let a = new Date(broadcastDate)
+        const datnew = dow.split(',')[a.getDay()] + ' ' +
+          a.getDate().toString().replace(/^1$/, '1er') + ' ' + months.split(',')[a.getMonth()] +
+          ' ' + a.getFullYear()
+        showtt = datnew
+      } else if (showtt === '_') {
+        showtt = ''
+      }
     }
 
     if (showtt) {
