@@ -56,8 +56,8 @@ const formatDuration = (durationMs) => {
   }
 }
 
-const getUrl = (ep, pa, famtt) => {
-  let s = `${ep[nd.SH.episode_number] ? ep[nd.SH.episode_number] + '-' : ''}${ep[nd.SH.show_TT] ? ep[nd.SH.show_TT] : ''}`
+const getUrl = (ep, pa, famtt, showtt) => {
+  let s = `${ep[nd.SH.episode_number] ? ep[nd.SH.episode_number] + '-' : ''}${showtt}`
     .replace(/[']/g, ' ')
     .replace(/[()! ,+:&/]/g, '')
     .replace(/[ .;]/g, '-')
@@ -242,8 +242,30 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
       famtt = show[nd.SH.family_TT]
       title.push(famtt)
     }
-    if (show[nd.SH.show_TT]) {
-      title.push(show[nd.SH.show_TT])
+
+    // broadcast_date_utc
+    let broadcastDate = null
+    if (show[nd.SH.broadcast_date_utc]) {
+      broadcastDate = ('00000000000' + show[nd.SH.broadcast_date_utc]).slice(-12)
+      broadcastDate = broadcastDate.replace(/^(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)/, '$1-$2-$3 $4:$5:$6')
+      broadcastDate = (parseInt(broadcastDate.slice(0.2)) > 18 ? '19' : '20') + broadcastDate
+    }
+
+    let showtt = show[nd.SH.show_TT]
+    if (showtt === '' && show[nd.SH.id_family] === 3) {
+      const dow = 'Dimanche,Lundi,Mardi,Mercredi,Jeudi,Vendredi,Samedi'
+      const months = 'janvier,février,mars,avril,mai,juin,juillet,aout,septembre,octobre,novembre,décembre'
+      let a = new Date(broadcastDate)
+      const datnew = dow.split(',')[a.getDay()] + ' ' +
+        a.getDate().toString().replace(/^1$/, '1er') + ' ' + months.split(',')[a.getMonth()] +
+        ' ' + a.getFullYear()
+      showtt = datnew
+    } else if (showtt === '_') {
+      showtt = ''
+    }
+
+    if (showtt) {
+      title.push(showtt)
     }
 
     let scr = ''
@@ -290,13 +312,10 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
       out += `    <div class='show-resume'>${show[nd.SH.show_resume].replace(/\n/g, '\n    ')}</div>\n`
     }
     out += `    <div class='show-stats'>`
-    if (show[nd.SH.broadcast_date_utc]) {
-      let d = ('00000000000' + show[nd.SH.broadcast_date_utc]).slice(-12)
-      d = d.replace(/^(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)/, '$1-$2-$3 $4:$5:$6')
-      d = (parseInt(d.slice(0.2)) > 18 ? '19' : '20') + d
-      out += `      diffusé le ${d} -- `
+    if (broadcastDate) {
+      out += `      diffusé le ${broadcastDate} -- `
     }
-    out += `      ${dur} -- <a href="${getUrl(show, part, famtt)}">noco</a>`
+    out += `      ${dur} -- <a href="${getUrl(show, part, famtt, showtt)}">noco</a>`
     out += `    </div>\n`
     out += '  </div>\n'
     out += '</div>\n'

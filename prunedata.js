@@ -30,6 +30,25 @@ const families = nocodata.families.map(_ => [
   _.family_resume && _.family_resume.length ? _.family_resume : '',
   _.family_OT !== _.family_TT ? `${_.family_OT} (${_.OT_lang})` : ''])
 
+// a faire avant que broadcast_date_utc soit réduit
+function dedupDateCU (allshows) {
+  allshows.filter(s => s.id_family === 3).forEach(show => {
+    const dow = 'Dimanche,Lundi,Mardi,Mercredi,Jeudi,Vendredi,Samedi'
+    const months = 'janvier,février,mars,avril,mai,juin,juillet,aout,septembre,octobre,novembre,décembre'
+    const a = new Date(show.broadcast_date_utc)
+    const datnew = dow.split(',')[a.getDay()] + ' ' +
+      a.getDate().toString().replace(/^1$/, '1er') + ' ' + months.split(',')[a.getMonth()] +
+      ' ' + a.getFullYear()
+    if (show.show_TT === null) {
+      // exception: met _ et en le remplacement par chaine vide à l'affichage
+      show.show_TT = '_'
+    } else if (show.show_TT === datnew) {
+      show.show_TT = ''
+    }
+  })
+}
+dedupDateCU(nocodata.shows)
+
 // trie par sorting_date_utc, permet de ne pas avoir champ complet
 const shows = nocodata.shows.sort((a, b) => (a.sorting_date_utc + a.show_key).localeCompare(b.sorting_date_utc + b.show_key)).map(_ => [
   _.id_show,
@@ -116,7 +135,6 @@ function patchScreenshots (shows) {
     show[nd.SH.screenshot] = show[nd.SH.screenshot].replace(/([0-9a-z])\/([0-9a-z])\/_?(.*)/, '$1$2$3')
   })
 }
-
 patchScreenshots(shows)
 
 function dedupMosaiques (shows) {
@@ -128,7 +146,6 @@ function dedupMosaiques (shows) {
     show[nd.SH.mosaique] = scr
   })
 }
-
 dedupMosaiques(shows)
 
 // Supprime le début de show_key quand il est identique à family_key
@@ -163,7 +180,6 @@ function dedupShowKeys (families, allshows) {
     })
   })
 }
-
 dedupShowKeys(families, shows)
 
 const fs = require('fs')
