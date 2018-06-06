@@ -193,16 +193,18 @@ function dedupSeason (families, allshows) {
   }
 
   allshows.forEach(show => {
-    const date = restoreDate(show[nd.SH.broadcast_date_utc])
+    let date = restoreDate(show[nd.SH.broadcast_date_utc])
     if (parseInt(date) >= 2013) {
-      const prefix = 'S' + date.slice(2, 4)
-      if (show[nd.SH.show_key].indexOf(prefix) === 0) {
+      // S13 -> S18
+      if (show[nd.SH.show_key].indexOf(`S${date.slice(2,4)}`) === 0) {
         show[nd.SH.show_key] = show[nd.SH.show_key].slice(3)
       } else if (show[nd.SH.show_key][0] === '-') {
         throw new Error('show_key begin with -')
       } else {
         show[nd.SH.show_key] = '-' + show[nd.SH.show_key]
       }
+    } else {
+      // S1 -> S12
     }
   })
 }
