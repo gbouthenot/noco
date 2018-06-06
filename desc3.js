@@ -259,6 +259,14 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
       } else {
         showKey = 'S' + broadcastDate.slice(2, 4) + showKey
       }
+    } else if (broadcastDate) {
+      // S1 -> S12: janvier à aout: S(n), septembre à décembre: S(n+1)
+      const season = `S${(parseInt(broadcastDate) - 2006) * 2 - (parseInt(broadcastDate.slice(5)) < 9)}`
+      if (showKey[0] === '-') {
+        showKey = showKey.slice(1)
+      } else {
+        showKey = season + showKey
+      }
     }
 
     let showtt = show[nd.SH.show_TT]
