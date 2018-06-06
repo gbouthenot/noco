@@ -253,15 +253,11 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
 
     // show key FIRST : season
     let showKey = show[nd.SH.show_key]
-    if (parseInt(broadcastDate) >= 2013) {
-      if (showKey[0] === '-') {
-        showKey = showKey.slice(1)
-      } else {
-        showKey = 'S' + broadcastDate.slice(2, 4) + showKey
-      }
-    } else if (broadcastDate) {
-      // S1 -> S12: janvier à aout: S(n), septembre à décembre: S(n+1)
-      const season = `S${(parseInt(broadcastDate) - 2006) * 2 - (parseInt(broadcastDate.slice(5)) < 9)}`
+    // S1 -> S12: janvier à aout: S(n), septembre à décembre: S(n+1)
+    // S13 -> S18: une saison par année janvier à décembre
+    if (broadcastDate) {
+      const season = 'S' + (parseInt(broadcastDate) >= 2013 ? broadcastDate.slice(2, 4)
+        : (parseInt(broadcastDate) - 2006) * 2 - (parseInt(broadcastDate.slice(5)) < 9))
       if (showKey[0] === '-') {
         showKey = showKey.slice(1)
       } else {

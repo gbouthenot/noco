@@ -194,25 +194,16 @@ function dedupSeason (families, allshows) {
 
   allshows.filter(s => s[nd.SH.broadcast_date_utc]).forEach(show => {
     const date = restoreDate(show[nd.SH.broadcast_date_utc])
-    if (parseInt(date) >= 2013) {
-      // S13 -> S18
-      if (show[nd.SH.show_key].indexOf(`S${date.slice(2, 4)}`) === 0) {
-        show[nd.SH.show_key] = show[nd.SH.show_key].slice(3)
-      } else if (show[nd.SH.show_key][0] === '-') {
-        throw new Error('show_key begin with -')
-      } else {
-        show[nd.SH.show_key] = '-' + show[nd.SH.show_key]
-      }
+    // S1 -> S12: janvier à aout: S(n), septembre à décembre: S(n+1)
+    // S13 -> S18: une saison par année janvier à décembre
+    const season = 'S' + (parseInt(date) >= 2013 ? date.slice(2, 4)
+      : (parseInt(date) - 2006) * 2 - (parseInt(date.slice(5)) < 9))
+    if (show[nd.SH.show_key].indexOf(season) === 0) {
+      show[nd.SH.show_key] = show[nd.SH.show_key].slice(season.length)
+    } else if (show[nd.SH.show_key][0] === '-') {
+      throw new Error('show_key begin with -')
     } else {
-      // S1 -> S12: janvier à aout: S(n), septembre à décembre: S(n+1)
-      const season = `S${(parseInt(date) - 2006) * 2 - (parseInt(date.slice(5)) < 9)}`
-      if (show[nd.SH.show_key].indexOf(season) === 0) {
-        show[nd.SH.show_key] = show[nd.SH.show_key].slice(season.length)
-      } else if (show[nd.SH.show_key][0] === '-') {
-        throw new Error('show_key begin with -')
-      } else {
-        show[nd.SH.show_key] = '-' + show[nd.SH.show_key]
-      }
+      show[nd.SH.show_key] = '-' + show[nd.SH.show_key]
     }
   })
 }
