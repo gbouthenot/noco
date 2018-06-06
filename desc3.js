@@ -248,7 +248,7 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
     if (show[nd.SH.broadcast_date_utc]) {
       broadcastDate = ('00000000000' + show[nd.SH.broadcast_date_utc]).slice(-12)
       broadcastDate = broadcastDate.replace(/^(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)/, '$1-$2-$3 $4:$5:$6')
-      broadcastDate = (parseInt(broadcastDate.slice(0.2)) > 18 ? '19' : '20') + broadcastDate
+      broadcastDate = (parseInt(broadcastDate.slice(0, 2)) > 18 ? '19' : '20') + broadcastDate
     }
 
     let showtt = show[nd.SH.show_TT]
