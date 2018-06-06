@@ -252,7 +252,7 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
     }
 
     let showtt = show[nd.SH.show_TT]
-    if (showtt === '' && show[nd.SH.id_family] === 3) {
+    if (showtt === '' && [3, 413].includes(show[nd.SH.id_family])) {
       const dow = 'Dimanche,Lundi,Mardi,Mercredi,Jeudi,Vendredi,Samedi'
       const months = 'janvier,février,mars,avril,mai,juin,juillet,aout,septembre,octobre,novembre,décembre'
       let a = new Date(broadcastDate)

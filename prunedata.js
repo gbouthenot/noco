@@ -32,7 +32,7 @@ const families = nocodata.families.map(_ => [
 
 // a faire avant que broadcast_date_utc soit réduit
 function dedupDateCU (allshows) {
-  allshows.filter(s => s.id_family === 3).forEach(show => {
+  allshows.filter(s => [3, 413].includes(s.id_family)).forEach(show => {
     const dow = 'Dimanche,Lundi,Mardi,Mercredi,Jeudi,Vendredi,Samedi'
     const months = 'janvier,février,mars,avril,mai,juin,juillet,aout,septembre,octobre,novembre,décembre'
     const a = new Date(show.broadcast_date_utc)
