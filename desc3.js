@@ -14,6 +14,11 @@ const outdir = './out'
 
 const nd = require('./noco-small.json')
 
+// object definitions
+'PA TH TY SH FA'.split(' ').forEach(itm => {
+  nd[itm] = nd[itm].split(' ').reduce((acc, k, i) => { acc[k] = i; return acc }, {})
+})
+
 const nocomedia = 'http://static.atomas.com/noco/media.noco.tv/'
 
 const removeAccents = require('remove-accents-diacritics')

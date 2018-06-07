@@ -218,6 +218,11 @@ dedupSeason(families, shows)
 // TODO: ne faire que partner NOLIFE
 // TODO: 2007 à 2012
 
+// before saving, compact object definitions
+'PA TH TY SH FA'.split(' ').forEach(itm => {
+  nd[itm] = Object.keys(nd[itm]).join(' ')
+})
+
 const fs = require('fs')
 fs.writeFileSync('noco-small.json', JSON.stringify(nd, null, 0))
 fs.writeFileSync('noco-small-2.json', JSON.stringify(nd, null, 2))
