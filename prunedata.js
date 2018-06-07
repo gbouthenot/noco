@@ -10,8 +10,8 @@ const partners = nocodata.partners.map(_ => [
   _.partner_key,
   _.partner_name,
   _.partner_shortname,
-  _.partner_resume,
-  _.partner_subtitle
+  _.partner_resume ? _.partner_resume : '',
+  _.partner_subtitle ? _.partner_subtitle : ''
 ])
 
 const themes = nocodata.themes.map(_ => [
