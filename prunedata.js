@@ -1,5 +1,10 @@
 const nocodata = require('./noco-data/noco-data')
 
+const PARTNER_NOLIFE = 1
+const FAMILY_CU = 3
+const FAMILY_CI = 413
+const TYPE_AP = 4
+
 const partners = nocodata.partners.map(_ => [
   _.id_partner,
   _.partner_key,
@@ -33,7 +38,7 @@ const families = nocodata.families.map(_ => [
 // a faire avant que broadcast_date_utc soit réduit
 function dedupDateCU (allshows) {
   // pour "101%"" et "le Continue de l'info"
-  allshows.filter(s => [3, 413].includes(s.id_family)).forEach(show => {
+  allshows.filter(s => [FAMILY_CU, FAMILY_CI].includes(s.id_family)).forEach(show => {
     const dow = 'Dimanche,Lundi,Mardi,Mercredi,Jeudi,Vendredi,Samedi'
     const months = 'janvier,février,mars,avril,mai,juin,juillet,aout,septembre,octobre,novembre,décembre'
     const a = new Date(show.broadcast_date_utc)
@@ -87,7 +92,11 @@ const nd = {
   types,
   themes,
   families,
-  shows
+  shows,
+  PARTNER_NOLIFE,
+  FAMILY_CU,
+  FAMILY_CI,
+  TYPE_AP
 }
 
 function patchScreenshots (shows) {
@@ -193,7 +202,8 @@ function dedupSeason (families, allshows) {
     return a
   }
 
-  families.filter(f => f[nd.FA.id_partner] === 1).forEach(f => {
+  // Uniquement pour Partner Nolife
+  families.filter(f => f[nd.FA.id_partner] === PARTNER_NOLIFE).forEach(f => {
     const shows = allshows.filter(s => s[nd.SH.broadcast_date_utc] && s[nd.SH.id_family] === f[nd.FA.id_family])
     shows.forEach(show => {
       const date = restoreDate(show[nd.SH.broadcast_date_utc])

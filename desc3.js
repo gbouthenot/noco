@@ -30,15 +30,15 @@ const removeAccents = require('remove-accents-diacritics')
 const showTypes = [
   {
     name: 'Épisodes',
-    filter: _ => _[nd.SH.episode_number] !== 0 && _[nd.SH.id_type] !== 4
+    filter: _ => _[nd.SH.episode_number] !== 0 && _[nd.SH.id_type] !== nd.TYPE_AP
   },
   {
     name: 'Rubriques',
-    filter: _ => _[nd.SH.episode_number] === 0 && _[nd.SH.id_type] !== 4
+    filter: _ => _[nd.SH.episode_number] === 0 && _[nd.SH.id_type] !== nd.TYPE_AP
   },
   {
     name: 'Bandes-annonces',
-    filter: _ => _[nd.SH.id_type] === 4
+    filter: _ => _[nd.SH.id_type] === nd.TYPE_AP
   }
 ]
 
@@ -260,7 +260,7 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
     let showKey = show[nd.SH.show_key]
     // S1 -> S12: janvier à aout: S(n), septembre à décembre: S(n+1)
     // S13 -> S18: une saison par année janvier à décembre
-    if (broadcastDate && part[nd.PA.id_partner] === 1) {
+    if (broadcastDate && part[nd.PA.id_partner] === nd.PARTNER_NOLIFE) {
       const season = 'S' + (parseInt(broadcastDate) >= 2013 ? broadcastDate.slice(2, 4)
         : (parseInt(broadcastDate) - 2006) * 2 - (parseInt(broadcastDate.slice(5)) < 9))
       if (showKey[0] === '-') {
@@ -272,7 +272,7 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
 
     let showtt = show[nd.SH.show_TT]
     // pour "101%"" et "le Continue de l'info"
-    if ([3, 413].includes(show[nd.SH.id_family])) {
+    if ([nd.FAMILY_CU, nd.FAMILY_CI].includes(show[nd.SH.id_family])) {
       if (showtt === '') {
         const dow = 'Dimanche,Lundi,Mardi,Mercredi,Jeudi,Vendredi,Samedi'
         const months = 'janvier,février,mars,avril,mai,juin,juillet,aout,septembre,octobre,novembre,décembre'
@@ -291,7 +291,7 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
     }
 
     // show_key SECOND: family_key
-    showKey = show[nd.SH.id_type] === 4 ? `AP_${showKey}`
+    showKey = show[nd.SH.id_type] === nd.TYPE_AP ? `AP_${showKey}`
       : showKey[0] === '_' ? showKey.slice(1)
         : `${fam[nd.FA.family_key]}_${showKey}`
 
