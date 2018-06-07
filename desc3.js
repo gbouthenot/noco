@@ -30,11 +30,11 @@ const removeAccents = require('remove-accents-diacritics')
 const showTypes = [
   {
     name: 'Épisodes',
-    filter: _ => _[nd.SH.episode_number] !== '0' && _[nd.SH.id_type] !== nd.TYPE_AP
+    filter: _ => _[nd.SH.episode_number] !== '' && _[nd.SH.id_type] !== nd.TYPE_AP
   },
   {
     name: 'Rubriques',
-    filter: _ => _[nd.SH.episode_number] === '0' && _[nd.SH.id_type] !== nd.TYPE_AP
+    filter: _ => _[nd.SH.episode_number] === '' && _[nd.SH.id_type] !== nd.TYPE_AP
   },
   {
     name: 'Bandes-annonces',
@@ -62,7 +62,7 @@ const formatDuration = (durationMs) => {
 }
 
 const getUrl = (ep, pa, famtt, showtt) => {
-  let s = `${ep[nd.SH.episode_number] !== '0' ? ep[nd.SH.episode_number] + '-' : ''}${showtt}`
+  let s = `${ep[nd.SH.episode_number] !== '' ? ep[nd.SH.episode_number] + '-' : ''}${showtt}`
     .replace(/[']/g, ' ')
     .replace(/[()! ,+:&/]/g, '')
     .replace(/[ .;]/g, '-')
@@ -231,10 +231,10 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
     const dur = formatDuration(show[nd.SH.duration_ms])
     const title = []
     let sn = ''
-    if (show[nd.SH.season_number] !== '0') {
+    if (show[nd.SH.season_number] !== '') {
       sn += 'S' + show[nd.SH.season_number]
     }
-    if (show[nd.SH.episode_number] !== '0') {
+    if (show[nd.SH.episode_number] !== '') {
       sn += 'E' + show[nd.SH.episode_number]
     } else {
       // pas de numéro d'épisode, met le numéro d'index
@@ -250,7 +250,7 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
 
     // broadcast_date_utc
     let broadcastDate = null
-    if (show[nd.SH.broadcast_date_utc] !== '0') {
+    if (show[nd.SH.broadcast_date_utc] !== '') {
       broadcastDate = ('00000000000' + show[nd.SH.broadcast_date_utc]).slice(-12)
       broadcastDate = broadcastDate.replace(/^(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)/, '$1-$2-$3 $4:$5:$6')
       broadcastDate = (parseInt(broadcastDate.slice(0, 2)) > 18 ? '19' : '20') + broadcastDate

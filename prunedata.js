@@ -62,8 +62,8 @@ const shows = nocodata.shows.sort((a, b) => (a.sorting_date_utc + a.show_key).lo
   _.id_family.toString(),
   _.id_type.toString(),
   _.show_resume && _.show_resume.length ? _.show_resume : '',
-  _.season_number.toString(),
-  _.episode_number.toString(),
+  _.season_number > 0 ? _.season_number.toString() : '',
+  _.episode_number > 0 ? _.episode_number.toString() : '',
   _.family_TT === nocodata.families.find(f => f.id_family === _.id_family).family_TT ? '' : _.family_TT,
   _.show_TT && _.show_TT.toString().length ? _.show_TT.toString() : '',
   (_.screenshot_1024x576.indexOf('https://media.noco.tv/screenshot/') === 0 ? _.screenshot_1024x576.replace(/^https:\/\/media.noco.tv\/screenshot\/[a-z]{3,4}\/\d{1,4}x\d{3}\/([0-9a-z])\/([0-9a-z])\//, '$1/$2/')
@@ -73,7 +73,7 @@ const shows = nocodata.shows.sort((a, b) => (a.sorting_date_utc + a.show_key).lo
   _.mosaique.replace(/^https:\/\/media.noco.tv\/mosaique\/[a-z]{3,4}\/([0-9a-z])\/([0-9a-z])\//, '$1/$2/').replace(/\.jpg$/, ''),
   _.duration_ms.toString(),
   _.sorting_date_utc.slice(2, 4).replace(/^0+(.+)/, '$1'),
-  _.broadcast_date_utc && _.broadcast_date_utc.length ? _.broadcast_date_utc.slice(2).replace(/[: -]/g, '').replace(/^0+(.+)/, '$1') : '0'
+  _.broadcast_date_utc && _.broadcast_date_utc.length ? _.broadcast_date_utc.slice(2).replace(/[: -]/g, '').replace(/^0+(.+)/, '$1') : ''
 ])
 
 // console.log(families)
