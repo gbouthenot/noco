@@ -1,12 +1,12 @@
 const nocodata = require('./noco-data/noco-data')
 
-const PARTNER_NOLIFE = 1
-const FAMILY_CU = 3
-const FAMILY_CI = 413
-const TYPE_AP = 4
+const PARTNER_NOLIFE = '1'
+const FAMILY_CU = '3'
+const FAMILY_CI = '413'
+const TYPE_AP = '4'
 
 const partners = nocodata.partners.map(_ => [
-  _.id_partner,
+  _.id_partner.toString(),
   _.partner_key,
   _.partner_name,
   _.partner_shortname,
@@ -15,22 +15,22 @@ const partners = nocodata.partners.map(_ => [
 ])
 
 const themes = nocodata.themes.map(_ => [
-  _.id_theme,
+  _.id_theme.toString(),
   _.theme_name
 ])
 
 const types = nocodata.types.map(_ => [
-  _.id_type,
+  _.id_type.toString(),
   _.type_name
 ])
 
 const families = nocodata.families.map(_ => [
-  _.id_family,
+  _.id_family.toString(),
   _.family_key,
-  _.id_partner,
+  _.id_partner.toString(),
   _.family_TT,
-  _.id_theme,
-  _.id_type,
+  _.id_theme.toString(),
+  _.id_type.toString(),
   _.icon_1024x576.replace('https://media.noco.tv/family/icon/', '').replace(/\/\d{1,4}x\d{3}\//, '/'),
   _.family_resume && _.family_resume.length ? _.family_resume : '',
   _.family_OT !== _.family_TT ? `${_.family_OT} (${_.OT_lang})` : ''])
@@ -38,7 +38,7 @@ const families = nocodata.families.map(_ => [
 // a faire avant que broadcast_date_utc soit réduit
 function dedupDateCU (allshows) {
   // pour "101%"" et "le Continue de l'info"
-  allshows.filter(s => [FAMILY_CU, FAMILY_CI].includes(s.id_family)).forEach(show => {
+  allshows.filter(s => [FAMILY_CU, FAMILY_CI].includes(s.id_family.toString())).forEach(show => {
     const dow = 'Dimanche,Lundi,Mardi,Mercredi,Jeudi,Vendredi,Samedi'
     const months = 'janvier,février,mars,avril,mai,juin,juillet,aout,septembre,octobre,novembre,décembre'
     const a = new Date(show.broadcast_date_utc)
@@ -57,13 +57,13 @@ dedupDateCU(nocodata.shows)
 
 // trie par sorting_date_utc, permet de ne pas avoir champ complet
 const shows = nocodata.shows.sort((a, b) => (a.sorting_date_utc + a.show_key).localeCompare(b.sorting_date_utc + b.show_key)).map(_ => [
-  _.id_show,
+  _.id_show.toString(),
   _.show_key,
-  _.id_family,
-  _.id_type,
+  _.id_family.toString(),
+  _.id_type.toString(),
   _.show_resume && _.show_resume.length ? _.show_resume : '',
-  _.season_number,
-  _.episode_number,
+  _.season_number.toString(),
+  _.episode_number.toString(),
   _.family_TT === nocodata.families.find(f => f.id_family === _.id_family).family_TT ? '' : _.family_TT,
   _.show_TT && _.show_TT.toString().length ? _.show_TT.toString() : '',
   (_.screenshot_1024x576.indexOf('https://media.noco.tv/screenshot/') === 0 ? _.screenshot_1024x576.replace(/^https:\/\/media.noco.tv\/screenshot\/[a-z]{3,4}\/\d{1,4}x\d{3}\/([0-9a-z])\/([0-9a-z])\//, '$1/$2/')
@@ -71,9 +71,9 @@ const shows = nocodata.shows.sort((a, b) => (a.sorting_date_utc + a.show_key).lo
     .replace(/\.jpg$/, ''),
   '',
   _.mosaique.replace(/^https:\/\/media.noco.tv\/mosaique\/[a-z]{3,4}\/([0-9a-z])\/([0-9a-z])\//, '$1/$2/').replace(/\.jpg$/, ''),
-  _.duration_ms,
-  parseInt(_.sorting_date_utc.slice(2, 4)),
-  _.broadcast_date_utc && _.broadcast_date_utc.length ? parseInt(_.broadcast_date_utc.slice(2).replace(/[: -]/g, '')) : 0
+  _.duration_ms.toString(),
+  _.sorting_date_utc.slice(2, 4).replace(/^0+(.+)/, '$1'),
+  _.broadcast_date_utc && _.broadcast_date_utc.length ? _.broadcast_date_utc.slice(2).replace(/[: -]/g, '').replace(/^0+(.+)/, '$1') : '0'
 ])
 
 // console.log(families)
@@ -137,7 +137,7 @@ function patchScreenshots (shows) {
     if (idx === 4) {
       show[nd.SH.screenshot] = scr.replace(show[nd.SH.show_key], '')
     } else {
-      const patch = def.find(_ => _[0] === show[0])
+      const patch = def.find(_ => _[0].toString() === show[0])
       if (!patch) { throw new Error(`cannot find show patch for ${show[0]}`) }
       show[nd.SH.screenshot] = scr.replace(`${patch[1]}_`, '')
       show[nd.SH.scrkey] = patch[1]
@@ -167,7 +167,7 @@ function dedupShowKeys (families, allshows) {
     // les shows normaux:
     // si show_key commence par `${family_key}_`: enlève ce préfixe
     // sinon, fait précéder show_key par '_'
-    shows = allshows.filter(s => s[nd.SH.id_family] === fid && s[nd.SH.id_type] !== 4)
+    shows = allshows.filter(s => s[nd.SH.id_family] === fid && s[nd.SH.id_type] !== TYPE_AP)
     shows.forEach(show => {
       const skey = show[nd.SH.show_key]
       if (skey.indexOf(fkey) === 0) {
@@ -180,7 +180,7 @@ function dedupShowKeys (families, allshows) {
       }
     })
     // les BA
-    shows = allshows.filter(s => s[nd.SH.id_family] === fid && s[nd.SH.id_type] === 4)
+    shows = allshows.filter(s => s[nd.SH.id_family] === fid && s[nd.SH.id_type] === TYPE_AP)
     shows.forEach(show => {
       const skey = show[nd.SH.show_key]
       if (skey.indexOf('AP_') !== 0) {

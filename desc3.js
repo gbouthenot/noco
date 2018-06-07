@@ -30,11 +30,11 @@ const removeAccents = require('remove-accents-diacritics')
 const showTypes = [
   {
     name: 'Épisodes',
-    filter: _ => _[nd.SH.episode_number] !== 0 && _[nd.SH.id_type] !== nd.TYPE_AP
+    filter: _ => _[nd.SH.episode_number] !== '0' && _[nd.SH.id_type] !== nd.TYPE_AP
   },
   {
     name: 'Rubriques',
-    filter: _ => _[nd.SH.episode_number] === 0 && _[nd.SH.id_type] !== nd.TYPE_AP
+    filter: _ => _[nd.SH.episode_number] === '0' && _[nd.SH.id_type] !== nd.TYPE_AP
   },
   {
     name: 'Bandes-annonces',
@@ -42,7 +42,7 @@ const showTypes = [
   }
 ]
 
-const totalDuration = (shows) => shows.reduce((acc, cur) => acc + cur[nd.SH.duration_ms], 0)
+const totalDuration = (shows) => shows.reduce((acc, cur) => acc + parseInt(cur[nd.SH.duration_ms]), 0)
 
 const formatDuration = (durationMs) => {
   let secs = Math.round(durationMs / 1000)
@@ -62,7 +62,7 @@ const formatDuration = (durationMs) => {
 }
 
 const getUrl = (ep, pa, famtt, showtt) => {
-  let s = `${ep[nd.SH.episode_number] ? ep[nd.SH.episode_number] + '-' : ''}${showtt}`
+  let s = `${ep[nd.SH.episode_number] !== '0' ? ep[nd.SH.episode_number] + '-' : ''}${showtt}`
     .replace(/[']/g, ' ')
     .replace(/[()! ,+:&/]/g, '')
     .replace(/[ .;]/g, '-')
@@ -196,13 +196,13 @@ function createPartnerFamilyYears (dir, url, prev, part, fam, familyShows) {
   !fs.existsSync(dir) && fs.mkdirSync(dir)
 
   // Par année, unique, trié
-  let years = familyShows.map(_ => _[nd.SH.sorting_year] + 2000)
+  let years = familyShows.map(_ => parseInt(_[nd.SH.sorting_year]) + 2000)
   years = [...new Set(years)]
   years = years.sort()
 
   const txts = []
   years.forEach(year => {
-    const shows = familyShows.filter(_ => _[nd.SH.sorting_year] + 2000 === year)
+    const shows = familyShows.filter(_ => parseInt(_[nd.SH.sorting_year]) + 2000 === year)
     const dur = formatDuration(totalDuration(shows))
     const url2 = `${url}${year}/`
 
@@ -231,10 +231,10 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
     const dur = formatDuration(show[nd.SH.duration_ms])
     const title = []
     let sn = ''
-    if (show[nd.SH.season_number]) {
+    if (show[nd.SH.season_number] !== '0') {
       sn += 'S' + show[nd.SH.season_number]
     }
-    if (show[nd.SH.episode_number]) {
+    if (show[nd.SH.episode_number] !== '0') {
       sn += 'E' + show[nd.SH.episode_number]
     } else {
       // pas de numéro d'épisode, met le numéro d'index
@@ -250,7 +250,7 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
 
     // broadcast_date_utc
     let broadcastDate = null
-    if (show[nd.SH.broadcast_date_utc]) {
+    if (show[nd.SH.broadcast_date_utc] !== '0') {
       broadcastDate = ('00000000000' + show[nd.SH.broadcast_date_utc]).slice(-12)
       broadcastDate = broadcastDate.replace(/^(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)/, '$1-$2-$3 $4:$5:$6')
       broadcastDate = (parseInt(broadcastDate.slice(0, 2)) > 18 ? '19' : '20') + broadcastDate
