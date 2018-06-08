@@ -311,6 +311,7 @@ function createPartnerFamilyYearShows (dir, url, prev, part, fam, year, showsYea
     }
     let mos = show[nd.SH.mosaique]
     if (mos) {
+      mos = `${mos}${'73a1'.slice(mos.length - 30)}`
       mos = `${nocomedia}mosaique/${parsl}/${mos[0]}/${mos[1]}/${showKey}_${mos.slice(2)}.jpg`
     }
 

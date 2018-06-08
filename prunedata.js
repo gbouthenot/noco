@@ -153,6 +153,7 @@ function dedupMosaiques (shows) {
     if (scr === '') { return }
     scr = scr.replace(show[nd.SH.show_key] + '_', '')
       .replace(/([0-9a-z])\/([0-9a-z])\/_?(.*)/, '$1$2$3')
+      .replace(/(73a1|3a1|a1|1)$/, '')
     show[nd.SH.mosaique] = scr
   })
 }
