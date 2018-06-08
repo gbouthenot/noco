@@ -246,6 +246,10 @@ dedupFamilies(families, partners)
   nd[itm] = Object.keys(nd[itm]).join(' ')
 })
 
+'partners types themes families shows'.split(' ').forEach(itm => {
+  nd[itm] = nd[itm].map(o => o.join('§'))
+})
+
 const fs = require('fs')
 fs.writeFileSync('noco-small.json', JSON.stringify(nd, null, 0))
 fs.writeFileSync('noco-small-2.json', JSON.stringify(nd, null, 2))

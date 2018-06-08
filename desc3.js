@@ -19,6 +19,10 @@ const nd = require('./noco-small.json')
   nd[itm] = nd[itm].split(' ').reduce((acc, k, i) => { acc[k] = i; return acc }, {})
 })
 
+'partners types themes families shows'.split(' ').forEach(itm => {
+  nd[itm] = nd[itm].map(o => o.split('§'))
+})
+
 const nocomedia = 'http://static.atomas.com/noco/media.noco.tv/'
 
 const removeAccents = require('remove-accents-diacritics')
