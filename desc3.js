@@ -159,10 +159,9 @@ function createPartnerFamilies (dir, url, prev, part, fams, partnerShows) {
 
     const dur = formatDuration(totalDuration(shows))
     const url2 = `${url}${fam[nd.FA.family_key]}/`
-    let icn = ''
-    if (fam[nd.FA.icon_1024x576].length) {
-      icn = `${nocomedia}family_160x90/${part[nd.PA.partner_key].toLowerCase()}/${fam[nd.FA.family_key].toLowerCase()}.jpg`
-    }
+    const icn = fam[nd.FA.icon_1024x576] ? ''
+      : (`${nocomedia}family_160x90/${part[nd.PA.partner_key].toLowerCase()}` +
+        `/${fam[nd.FA.family_key].toLowerCase()}.jpg`)
 
     let out = ''
     out += `<div class='family' data-id='${fam[nd.FA.id_family]}'>`

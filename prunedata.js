@@ -224,10 +224,22 @@ function dedupSeason (families, allshows) {
 }
 dedupSeason(families, shows)
 
-// d'abord 2013 à 2018
-
-// TODO: ne faire que partner NOLIFE
-// TODO: 2007 à 2012
+function dedupFamilies (families, partners) {
+  families.forEach(f => {
+    const fkey = f[nd.FA.family_key]
+    const part = partners.find(p => p[0] === f[nd.FA.id_partner])
+    const icon = f[nd.FA.icon_1024x576]
+    const icon2 = `${part[nd.PA.partner_key]}/${fkey}.jpg`.toLowerCase()
+    if (icon === '') {
+      f[nd.FA.icon_1024x576] = '_'
+    } else if (icon === icon2) {
+      f[nd.FA.icon_1024x576] = ''
+    } else {
+      throw new Error(`NOK for ${f[0]} ${icon} ${icon2}`)
+    }
+  })
+}
+dedupFamilies(families, partners)
 
 // before saving, compact object definitions
 'PA TH TY SH FA'.split(' ').forEach(itm => {
@@ -416,3 +428,6 @@ fs.writeFileSync('noco-small-2.json', JSON.stringify(nd, null, 2))
 // Famille ZIKO (Zikos): 0 / 18
 // total: 914 / 15779 vidéos non concordantes
 // soit moins de 6%
+
+// famille avec image non concordante
+// nosmall.families.map(f=>[f[0],f[1],nosmall.partners.find(p=>p[0]===f[2])[1],f[6]]).filter(f=>f[3]!==`${f[2]}/${f[1]}.jpg`.toLowerCase())
