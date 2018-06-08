@@ -83,6 +83,10 @@ const shows = nocodata.shows.sort((a, b) => (a.sorting_date_utc + a.show_key).lo
 //   console.log(_[3])
 // })
 const nd = {
+  PARTNER_NOLIFE,
+  FAMILY_CU,
+  FAMILY_CI,
+  TYPE_AP,
   PA: { id_partner: 0, partner_key: 1, partner_name: 2, partner_shortname: 3, partner_resume: 4, partner_subtitle: 5 },
   TH: { id_theme: 0, theme_name: 1 },
   TY: { id_type: 0, type_name: 1 },
@@ -92,11 +96,7 @@ const nd = {
   types,
   themes,
   families,
-  shows,
-  PARTNER_NOLIFE,
-  FAMILY_CU,
-  FAMILY_CI,
-  TYPE_AP
+  shows
 }
 
 function patchScreenshots (shows) {
@@ -242,17 +242,19 @@ function dedupFamilies (families, partners) {
 dedupFamilies(families, partners)
 
 // before saving, compact object definitions
-'PA TH TY SH FA'.split(' ').forEach(itm => {
-  nd[itm] = Object.keys(nd[itm]).join(' ')
-})
-
-'partners types themes families shows'.split(' ').forEach(itm => {
-  nd[itm] = nd[itm].map(o => o.join('§'))
+Object.keys(nd).forEach(itm => {
+  if (itm.length === 2) {
+    nd[itm] = Object.keys(nd[itm]).join(' ')
+  } else if (itm.indexOf('_') === -1) {
+    // data: join everything
+    nd[itm] = nd[itm].map(o => o.join('§'))
+  } else {
+    // constants: keep it like that
+  }
 })
 
 const fs = require('fs')
-fs.writeFileSync('noco-small.json', JSON.stringify(nd, null, 0))
-fs.writeFileSync('noco-small-2.json', JSON.stringify(nd, null, 2))
+fs.writeFileSync('noco-small.json', JSON.stringify(nd, null, 1))
 
 //
 // famshows=nosmall.families.map(f => nosmall.shows.filter(s => s[nd.SH.id_family] === f[nd.FA.id_family]))

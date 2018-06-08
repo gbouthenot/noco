@@ -14,13 +14,16 @@ const outdir = './out'
 
 const nd = require('./noco-small.json')
 
-// object definitions
-'PA TH TY SH FA'.split(' ').forEach(itm => {
-  nd[itm] = nd[itm].split(' ').reduce((acc, k, i) => { acc[k] = i; return acc }, {})
-})
-
-'partners types themes families shows'.split(' ').forEach(itm => {
-  nd[itm] = nd[itm].map(o => o.split('§'))
+// restore objects
+Object.keys(nd).forEach(itm => {
+  if (itm.length === 2) {
+    nd[itm] = nd[itm].split(' ').reduce((acc, k, i) => { acc[k] = i; return acc }, {})
+  } else if (itm.indexOf('_') === -1) {
+    // data: join everything
+    nd[itm] = nd[itm].map(o => o.split('§'))
+  } else {
+    // constants: keep it like that
+  }
 })
 
 const nocomedia = 'http://static.atomas.com/noco/media.noco.tv/'
