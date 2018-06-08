@@ -1,9 +1,31 @@
 const nocodata = require('./noco-data/noco-data')
 
+// Les contstantes
 const PARTNER_NOLIFE = '1'
 const FAMILY_CU = '3'
 const FAMILY_CI = '413'
 const TYPE_AP = '4'
+
+// Les titres des émissions "101%"" et "Le continue de l'info" sont très majoritairement
+// formé de la date du jour
+// a faire avant que broadcast_date_utc soit réduit
+function dedupDateCU (allshows) {
+  allshows.filter(s => [FAMILY_CU, FAMILY_CI].includes(s.id_family.toString())).forEach(show => {
+    const dow = 'Dimanche,Lundi,Mardi,Mercredi,Jeudi,Vendredi,Samedi'
+    const months = 'janvier,février,mars,avril,mai,juin,juillet,aout,septembre,octobre,novembre,décembre'
+    const a = new Date(show.broadcast_date_utc)
+    const datnew = dow.split(',')[a.getDay()] + ' ' +
+      a.getDate().toString().replace(/^1$/, '1er') + ' ' + months.split(',')[a.getMonth()] +
+      ' ' + a.getFullYear()
+    if (show.show_TT === null) {
+      // exception: met _ et en le remplacement par chaine vide à l'affichage
+      show.show_TT = '_'
+    } else if (show.show_TT === datnew) {
+      show.show_TT = ''
+    }
+  })
+}
+dedupDateCU(nocodata.shows)
 
 const partners = nocodata.partners.map(_ => [
   _.id_partner.toString(),
@@ -35,27 +57,7 @@ const families = nocodata.families.map(_ => [
   _.family_resume && _.family_resume.length ? _.family_resume : '',
   _.family_OT !== _.family_TT ? `${_.family_OT} (${_.OT_lang})` : ''])
 
-// a faire avant que broadcast_date_utc soit réduit
-function dedupDateCU (allshows) {
-  // pour "101%"" et "le Continue de l'info"
-  allshows.filter(s => [FAMILY_CU, FAMILY_CI].includes(s.id_family.toString())).forEach(show => {
-    const dow = 'Dimanche,Lundi,Mardi,Mercredi,Jeudi,Vendredi,Samedi'
-    const months = 'janvier,février,mars,avril,mai,juin,juillet,aout,septembre,octobre,novembre,décembre'
-    const a = new Date(show.broadcast_date_utc)
-    const datnew = dow.split(',')[a.getDay()] + ' ' +
-      a.getDate().toString().replace(/^1$/, '1er') + ' ' + months.split(',')[a.getMonth()] +
-      ' ' + a.getFullYear()
-    if (show.show_TT === null) {
-      // exception: met _ et en le remplacement par chaine vide à l'affichage
-      show.show_TT = '_'
-    } else if (show.show_TT === datnew) {
-      show.show_TT = ''
-    }
-  })
-}
-dedupDateCU(nocodata.shows)
-
-// trie par sorting_date_utc, permet de ne pas avoir champ complet
+// trie par sorting_date_utc, permet de ne pas garder qu'une partie de "sorting_date_utc"
 const shows = nocodata.shows.sort((a, b) => (a.sorting_date_utc + a.show_key).localeCompare(b.sorting_date_utc + b.show_key)).map(_ => [
   _.id_show.toString(),
   _.show_key,
@@ -64,6 +66,7 @@ const shows = nocodata.shows.sort((a, b) => (a.sorting_date_utc + a.show_key).lo
   _.show_resume && _.show_resume.length ? _.show_resume : '',
   _.season_number > 0 ? _.season_number.toString() : '',
   _.episode_number > 0 ? _.episode_number.toString() : '',
+  // uniquement si != du family_TT de la famille
   _.family_TT === nocodata.families.find(f => f.id_family === _.id_family).family_TT ? '' : _.family_TT,
   _.show_TT && _.show_TT.toString().length ? _.show_TT.toString() : '',
   (_.screenshot_1024x576.indexOf('https://media.noco.tv/screenshot/') === 0 ? _.screenshot_1024x576.replace(/^https:\/\/media.noco.tv\/screenshot\/[a-z]{3,4}\/\d{1,4}x\d{3}\/([0-9a-z])\/([0-9a-z])\//, '$1/$2/')
@@ -72,16 +75,12 @@ const shows = nocodata.shows.sort((a, b) => (a.sorting_date_utc + a.show_key).lo
   '',
   _.mosaique.replace(/^https:\/\/media.noco.tv\/mosaique\/[a-z]{3,4}\/([0-9a-z])\/([0-9a-z])\//, '$1/$2/').replace(/\.jpg$/, ''),
   _.duration_ms.toString(),
+  // ne garde que les deux derniers chiffres de l'année (sans le zéro)
   _.sorting_date_utc.slice(2, 4).replace(/^0+(.+)/, '$1'),
+  // enlève les séprarateurs et les deux premiers chiffres de l'année (sans le zéro)
   _.broadcast_date_utc && _.broadcast_date_utc.length ? _.broadcast_date_utc.slice(2).replace(/[: -]/g, '').replace(/^0+(.+)/, '$1') : ''
 ])
 
-// console.log(families)
-// TODO: il y a des exceptions pour screenshot
-
-// partners.forEach(_ => {
-//   console.log(_[3])
-// })
 const nd = {
   PARTNER_NOLIFE,
   FAMILY_CU,
@@ -99,6 +98,8 @@ const nd = {
   shows
 }
 
+// screenshots commencent en général par show_key, puis _ puis une chaine
+// les exceptions sont réécrites
 function patchScreenshots (shows) {
   const def = [
     [ 5049, 'MOS_S9s05n15' ],
@@ -147,6 +148,9 @@ function patchScreenshots (shows) {
 }
 patchScreenshots(shows)
 
+// Mosaiques:
+// Enlève le séparateur a/b/cdefgh -> abcdefgh
+// Elles sont hashées, la séquence "73a1" sont majoritaires à la fin. (pas énormément)
 function dedupMosaiques (shows) {
   shows.forEach(show => {
     let scr = show[nd.SH.mosaique]
@@ -195,6 +199,7 @@ dedupShowKeys(families, shows)
 
 // Supprime le numéro de saison au début de show_key. A faire
 // après "Supprime le début de show_key quand il est identique à family_key"
+// show_key est lui même généré à partir de show_key et family_key
 function dedupSeason (families, allshows) {
   const restoreDate = (a) => {
     a = ('00000000000' + a).slice(-12)
@@ -224,6 +229,7 @@ function dedupSeason (families, allshows) {
 }
 dedupSeason(families, shows)
 
+// les icones des familles sont toutes formées de partner_key/family_key.jpg
 function dedupFamilies (families, partners) {
   families.forEach(f => {
     const fkey = f[nd.FA.family_key]
@@ -255,185 +261,3 @@ Object.keys(nd).forEach(itm => {
 
 const fs = require('fs')
 fs.writeFileSync('noco-small.json', JSON.stringify(nd, null, 1))
-
-//
-// famshows=nosmall.families.map(f => nosmall.shows.filter(s => s[nd.SH.id_family] === f[nd.FA.id_family]))
-// parfams = nosmall.partners.map(p=>[p[0], nosmall.families.filter(f => f[2]===p[0])]);
-// parfamids = nosmall.partners.map(p=>[p[0], nosmall.families.filter(f => f[2]===p[0]).map(f => f[0])]);
-//   [ [ 18, [ 266, 269 ] ], ...]
-//   [ [ partner_id, [ id_family, ...] ], ... ]
-//
-// parfamshows = nosmall.partners.map(p=>[p[0], nosmall.families.filter(f => f[2]===p[0]).map(f => nosmall.shows.filter(sh => sh[nd.SH.id_family]===f[0])).reduce((a, b) => a.concat(b), [])])
-// parfamshows.map(p=>[p[0], p[1].length])
-// les partners et leurs shows:
-// [ [ 18, 92 ],
-//   [ 12, 58 ],
-//   [ 26, 3 ],
-//   [ 1, 15355 ],
-//   [ 4, 134 ],
-//   [ 9, 68 ],
-//   [ 24, 121 ] ]
-// vérification que les mosaiques/screenshots commencencent toutes par "partner_key/" ou "/partner_key/":
-// parfamshows.map(p=>[p[0], [...new Set(p[1].map(s => s[nd.SH.mosaique].slice(0,5)))]])
-
-// les screenshots qui ne correpondent pas avec show_key:
-// nosmall.shows.filter(_=>_[9]!=="" && _[9][0]!=='/').map(_=>[_[0], _[9], _[1], _[9].indexOf(_[1])]).filter(_=>_[3]!==4)
-// les mosaiques qui ne correspondent pas avec show_key:
-// nosmall.shows.filter(_=>_[11]!=="").map(_=>[_[0], _[11], _[1], _[11].indexOf(_[1]+'_')]).filter(_=>_[3]!==4)
-// [ [ 24963, '8/d/VAC_LR AJIKAN_689883edfc07ff723b7b8910220e9c31', 'VAC_LRAJIKAN', -1 ] ]
-
-// non concordance show_key avec family_key:
-// a=0;b=0;nocodata.families.forEach(family=>{fid=family.id_family; fkey=family.family_key; l=fkey.length; shows=nocodata.shows.filter(s=>s.id_family===fid && s.type_key!=='AP'); sho=shows.filter(s=>s.show_key.slice(0,l+1)!==(fkey+'_')); console.log(`Famille ${family.family_key} (${family.family_TT}): ${sho.length} / ${shows.length}`); a+=shows.length; b+=sho.length}); console.log(`total: ${b} / ${a} vidéos non concordantes`);
-// Famille POL ((Vous savez) Pourquoi on est là): 0 / 80
-// Famille CUP (101 PUR 100): 0 / 137
-// Famille CU (101%): 2 / 1975
-// Famille 1D6 (1D6): 0 / 143
-// Famille 3MPP (3mn pas + pour parler d'un jeu 3+): 17 / 87
-// Famille 56K (56Kast): 0 / 124
-// Famille ALAV (À lire, à voir): 0 / 117
-// Famille AT (À Table !): 0 / 20
-// Famille ANN (Annonces): 2 / 2
-// Famille AH (Another Hero): 0 / 15
-// Famille BD (BD Blogueurs): 0 / 8
-// Famille BOJ (À la découverte des beautés inconnues du Japon): 0 / 0
-// Famille BBAH (Big Bang Hunter): 0 / 30
-// Famille BBH (Big Bug Hunter): 0 / 47
-// Famille CDB (Ça déboîte !): 0 / 38
-// Famille CASH (Casshern Sins): 0 / 24
-// Famille CK (Catsuka): 2 / 179
-// Famille CQFD (Ce qu'il ne faut pas dire): 0 / 14
-// Famille RA (Ce soir j'ai raid): 0 / 10
-// Famille CT (Chaud Time): 0 / 33
-// Famille CM (Chez Marcus): 5 / 446
-// Famille SO18 (Classés 18+): 8 / 146
-// Famille CTAC (Club Télé Achier): 0 / 6
-// Famille CQ (Collector's Quest): 0 / 18
-// Famille CPL (Compiler): 0 / 44
-// Famille CP (Costume Player): 21 / 52
-// Famille CCO (Côté Comics): 0 / 24
-// Famille CRE (CréAtioN): 0 / 13
-// Famille CS (Critique): 6 / 2035
-// Famille CRUN (Crunch Time): 1 / 49
-// Famille DAMN (Damned): 0 / 10
-// Famille DM (Debug Mode): 0 / 198
-// Famille DP (Deux minutes pour parler de...): 0 / 16
-// Famille DS (Devil'Slayer): 0 / 14
-// Famille DO (Documentaire): 0 / 39
-// Famille DL (DonJon Legacy): 0 / 9
-// Famille DF (Double Face): 0 / 17
-// Famille EC (écrans.fr, le podcast): 0 / 68
-// Famille EMN (En Mode Normal): 0 / 47
-// Famille EJ (Esprit Japon): 0 / 71
-// Famille EX (EXP): 1 / 54
-// Famille EL (Extra Life): 0 / 175
-// Famille FAQ (FAQ): 0 / 27
-// Famille FMPG (Fatal Misses & Plastic Girl): 0 / 2
-// Famille FILM (Film): 0 / 33
-// Famille FA (Film amateur): 16 / 81
-// Famille FCON (First Contact): 0 / 47
-// Famille FLAG (FLAG): 0 / 13
-// Famille FL (Flander's Company): 0 / 82
-// Famille COOL (Cool Guys, Hot Ramen): 0 / 16
-// Famille FC (Format Court): 0 / 48
-// Famille FFIV (France Five): 0 / 0
-// Famille FMP (Full Metal Panic!): 0 / 0
-// Famille GC (Game Center): 0 / 20
-// Famille TG (Game Trailer): 34 / 34
-// Famille GL (Geek's Life): 0 / 136
-// Famille GUNB (Gunbuster / Diebuster): 0 / 0
-// Famille GUNG (Gundam Reconguista in G): 0 / 0
-// Famille HA (Hall of Shame): 0 / 10
-// Famille HC (Hard Corner): 0 / 36
-// Famille HP (Hidden Palace): 0 / 59
-// Famille HIMA (Himawari! à l'école des ninjas): 0 / 26
-// Famille AFM (Hôkago Midnighters): 0 / 12
-// Famille NEED (I Need Romance): 0 / 16
-// Famille J-5 (J-5): 0 / 8
-// Famille JTSR (J-Top (Speed run)): 32 / 356
-// Famille JJS (J'ai jamais su dire non): 0 / 16
-// Famille JMCU (Jamais sans 1%): 0 / 19
-// Famille JM (Japan in Motion): 0 / 266
-// Famille JET (Jeu-Top): 25 / 75
-// Famille KES (Keskejfé): 0 / 9
-// Famille KYO (Kyô no wanko - Le Toutou du jour): 0 / 23
-// Famille HJV (L'Hebdo Jeu Vidéo): 0 / 25
-// Famille HDN (L'hippodrôle de Nolife): 1 / 39
-// Famille IK (L'Instant Kamikaze): 0 / 4
-// Famille FAL (La Faute à l'algo): 0 / 24
-// Famille LGP (La Grosse Partie): 0 / 17
-// Famille MG (La minute du geek): 1 / 332
-// Famille BDG (Le Blog de Gaea): 0 / 5
-// Famille CA (Le coin des abonnés): 0 / 3
-// Famille CI (Le Continue de l'info): 0 / 113
-// Famille DCLP (Le Decliptage du J-Top): 0 / 8
-// Famille JE (Le jeu du ***): 0 / 41
-// Famille INFO (Le Point Info): 0 / 60
-// Famille PN (Le point sur Nolife): 69 / 201
-// Famille LST (Le Saviez-tu ? De Jean-Foutre): 0 / 23
-// Famille VF (Le Visiteur du Futur): 0 / 38
-// Famille BLA (Les Blablagues de Laurent-Laurent): 0 / 18
-// Famille COVI (Les conseils vidéo du professeur Théorie et du docteur Pratique): 0 / 29
-// Famille OPL (Les Oubliés de la Playhistoire): 0 / 147
-// Famille VAC (Les vacances de Nolife): 47 / 160
-// Famille LR (Live report): 5 / 63
-// Famille LLS (Love Live! Sunshine!!): 0 / 0
-// Famille MM (Mange mon geek): 0 / 16
-// Famille LUCI (Lucifer): 0 / 20
-// Famille MHC (Metal Hurlant Chronicles): 0 / 25
-// Famille MMPG (Metal Missile & Plastic Gun): 0 / 108
-// Famille MNM (Mon Nolife à Moi): 0 / 5
-// Famille MPC (Mon plan Culte): 0 / 29
-// Famille MS (Mon souvenir): 0 / 181
-// Famille MOS (Money Shot): 0 / 176
-// Famille MONH (Journal de Monster Hunter : Le Village Felyne au bord du Gouffre G): 0 / 13
-// Famille MDS (mot de saison): 1 / 20
-// Famille KISS (Playful Kiss): 0 / 16
-// Famille NW (News): 354 / 1481
-// Famille NG (Nihongo ga dekimasu ka): 0 / 87
-// Famille NC (Nochan): 0 / 225
-// Famille NOIR (Noir): 0 / 31
-// Famille NL (Nolife): 105 / 149
-// Famille NEI (Nolife Emploi IRL): 0 / 39
-// Famille NONS (NONSÉRIE): 0 / 13
-// Famille NO (Noob): 0 / 118
-// Famille PLS (Nuit Calme en PLS): 0 / 19
-// Famille 1S (One-shot): 3 / 3
-// Famille OS (Oscillations): 0 / 139
-// Famille OT (OTO): 0 / 158
-// Famille OTEX (OTO EX): 8 / 12
-// Famille OP (OTO Play): 0 / 47
-// Famille PIC (PICO PICO): 0 / 34
-// Famille PI (PIXA): 0 / 14
-// Famille PIX (PIXELS): 0 / 46
-// Famille PUR (Purgatoire): 0 / 31
-// Famille RAA (Random Access Archives): 0 / 3
-// Famille RP (Reportage): 16 / 910
-// Famille RM (Retro & Magic): 1 / 475
-// Famille RC (Rêves et Cris): 0 / 56
-// Famille RS (Roadstrip): 0 / 43
-// Famille ROL (Roleplay): 0 / 45
-// Famille SOJ (Silence, on joue !): 0 / 49
-// Famille SK (Skill): 1 / 139
-// Famille SM (Smartphones & Tablettes): 0 / 41
-// Famille SO (Soirée spéciale): 3 / 186
-// Famille ST (Stamina): 0 / 19
-// Famille SP (Superplay): 93 / 186
-// Famille TIPS (Technologie de l’Information en Pratique et Sans danger): 0 / 20
-// Famille TP (Temps Perdu): 0 / 239
-// Famille TR (Temps Réel): 0 / 25
-// Famille GUI (The Guild): 0 / 58
-// Famille PTB (The Place to Be): 30 / 116
-// Famille TOC (toco toco): 0 / 125
-// Famille TC (Tôkyô Café): 3 / 243
-// Famille UPS (Un peu de silence): 1 / 17
-// Famille VH (Very Hard): 0 / 34
-// Famille WP (War Pigs): 0 / 4
-// Famille WZP (WarpZone Project): 0 / 11
-// Famille WIP (WiP – Work in Progress): 0 / 8
-// Famille WOLF (Wolf's Rain): 0 / 0
-// Famille ZIKO (Zikos): 0 / 18
-// total: 914 / 15779 vidéos non concordantes
-// soit moins de 6%
-
-// famille avec image non concordante
-// nosmall.families.map(f=>[f[0],f[1],nosmall.partners.find(p=>p[0]===f[2])[1],f[6]]).filter(f=>f[3]!==`${f[2]}/${f[1]}.jpg`.toLowerCase())
