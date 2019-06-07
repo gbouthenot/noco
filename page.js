@@ -2,12 +2,21 @@
 /* eslint padded-blocks:[0] */
 function delegateEvent (parent, type, selector, action) {
   parent.addEventListener(type, (e) => {
-    // array of all layers until the parent (included)
-    const path = e.path.slice(0, e.path.indexOf(parent) + 1)
+    // getParents. chrome has event.path
+    let path = ((elem) => {
+      const parents = []
+      for (; elem; elem = elem.parentNode) {
+        parents.push(elem)
+      }
+      parents.push(window)
+      return parents
+    })(e.target)
+    // all layers up to the parent (included)
+    path = path.slice(0, path.indexOf(parent) + 1)
     const el = path.find(_ => _.matches && _.matches(selector))
     if (el) {
-      e.delTarget = el // le match
-      e.delParentTarget = parent // le parent du delegate
+      e.delTarget = el // matched el
+      e.delParentTarget = parent // delegate parent
       e.delPath = path
       action.call(this, e)
     }
