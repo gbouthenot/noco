@@ -75,6 +75,13 @@ function esc (string, indent) {
 // script pour ajouter js et css
 function headers (recap) {
   return `
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Noco Legacy</title>
+  </head>
+<body>
 <script type='text/javascript'>
 (function () {
     const l = window.location.href
