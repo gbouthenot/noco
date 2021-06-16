@@ -12,7 +12,7 @@ const outdir = './out'
 
 const nocodata = require('./noco-data/noco-data')
 
-const nocomedia = 'https://static.atomas.com/noco-asssets/media.noco.tv/'
+const nocomedia = 'https://static.atomas.com/noco-assets/media.noco.tv/'
 
 const removeAccents = require('remove-accents-diacritics')
 
