@@ -319,3 +319,40 @@ shows.filter(_=>_.family_TT==='Classés 18+').filter(_=>_.sorting_date_utc.slice
 18
 shows.filter(_=>_.show_key.slice(0,4)==='SO18').filter(_=>_.broadcast_date_utc.slice(0,4) === '2015').length
 18
+
+
+// REPL
+
+noco = require('./noco-data/noco-data.js')
+// famille 101% (pas la peine de filtrer par partner)
+fam = noco.families.find(a=>a.family_key==='CU')
+// tous les shows
+
+
+// Saisons de diffusion:
+function getSemestre(d) {
+  if (d <= '2007-06-01') return 0
+  if (d <=' 2007-07-15') return 1
+  if (d <=' 2007-12-23') return 2
+  if (d <=' 2008-07-13') return 3
+  if (d <=' 2008-12-31') return 4
+  if (d <=' 2009-07-03') return 5
+  if (d <=' 2009-12-31') return 6
+  if (d <=' 2010-07-01') return 7
+  if (d <=' 2010-12-31') return 8
+  if (d <=' 2011-07-08') return 9
+  if (d <=' 2011-12-31') return 10
+  if (d <=' 2012-07-15') return 11
+  if (d <=' 2012-12-31') return 12
+  if (d <=' 2013-07-15') return 13 // a partir de la saison 13 (2013), les saisons durent un an
+  if (d <=' 2013-12-31') return 14
+  if (d <=' 2014-07-15') return 15
+  if (d <=' 2014-12-31') return 16
+  if (d <=' 2015-07-15') return 17
+  if (d <=' 2015-12-31') return 18
+  if (d <=' 2016-07-15') return 19
+  if (d <=' 2016-12-31') return 20
+  if (d <=' 2017-07-15') return 21
+  if (d <=' 2017-12-31') return 21
+  return 22
+}

@@ -2,7 +2,7 @@
   "name": "noco",
   "version": "1.0.0",
   "description": "",
-  "main": "families.js",
+  "main": "gensite.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
