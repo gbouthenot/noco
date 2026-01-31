@@ -1,0 +1,108 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet"href="page.css"/>
+    <title>Noco Legacy Dynsite</title>
+<style>
+.req { display:inline; }
+.val { display:inline; }
+input[type=number] { width:3em; }
+ul.destinations { list-style:none; margin-top:0; padding-left:1em; }
+.verygood { color:#0c0; }
+.warn { color:#aa0; }
+.verybad { color:#f00; }
+</style>
+</head>
+<body>
+    <div id="searchbox">
+        <form>
+            search: <input id="srctxt" type="text" size="30" value="layt" />
+            regex: <input id="srcre" type="checkbox" />
+        </form>
+    </div>
+
+    <h1>Partners:</h1>
+    <div id="partners"></div>
+    <hr>
+
+<!-- [ TEMPLATES -->
+<script type="text/html" id="tplPartners">
+    <div class='partner' data-id='{{>part.id_partner}}'>
+        <a href="{{>url2}}"><div class='part-icn'><img src='{{>icn}}' /></div></a>
+        <div class='part-desc'>
+            <div class="part-name">{{>part.partner_name}}</div>
+            <div class="part-stats">familles: {{>fams.length}}; nb emissions: {{>shows.length}}; durée totale: {{>dur}}</div>
+            {{if part.partner_resume}}
+                <div class='part-resume'>{{>part.partner_resume}}</div>
+            {{/if}}
+            {{if part.partner_subtitle}}
+                <div class='part-subtitle'>{{>part.partner_subtitle}}</div>
+            {{/if}}
+        </div></div>
+</script>
+
+<script type="text/html" id="tplFamily">
+    <div class='family' data-id='{{>fam[nd.FA.id_family]}}'>
+        <a href="{{>url2}}"><div class='fam-icn'>{{if icn.length}}<img src='{{>icn}}' />{{/if}}</div></a>
+        <div class='fam-desc'>
+            <div class='fam-name'>{{>fam[nd.FA.family_TT]}}</div>
+            <div class='fam-theme'>{{>theme[nd.TH.theme_name]}}</div> <div class='fam-type'>{{>type[nd.TY.type_name]}}</div>
+            <div class='fam-stats'>{{>shows.length}} vidéos, {{>dur}}</div>
+            {{if fam[nd.FA.family_OT]}}
+                <div class='fam-name-vo'>{{>fam[nd.FA.family_OT]}}</div>
+            {{/if}}
+            {{if fam[nd.FA.family_resume]}}
+                <div class='fam-resume'>{{>fam[nd.FA.family_resume]}}</div>
+            {{/if}}
+        </div>
+    </div>
+</script>
+
+<script type="text/html" id="tplShow">
+    <div class='show' data-id='{{>show[nd.SH.id_show]}}'>
+        <div class='show-mos' style='display:none;'>
+            <div class='mos' style='background-image:url("${mos}");'></div>
+            <div class='prog'></div>
+        </div>
+        <div class='show-scr'>
+            {{if scr}}
+                <img src='{{>scr}}' />
+            {{/if}}
+        </div>
+        <div class='show-desc'>
+            <!--<div class='show-idx'>#${i + 1}</div>-->
+            <div class='show-name'>
+                <div class='num'>{{>sn}}</div>
+                <div class='title'>{{>title}}</div>
+                <div class='key'>{{>showKey}}</div>
+            </div>
+                {{if show_resume}}
+                    <div class='show-resume'>{{>show_resume}}</div>
+                {{/if}}
+            <div class='show-stats'>
+                {{if broadcastDate}}
+                    diffusé le {{>broadcastDate}} -- 
+                {{/if}}
+                {{>dur}} -- <a href="{{>nocourl}}">noco</a>
+            </div>
+        </div>
+    </div>
+</script>
+
+<!-- ] TEMPLATES -->
+
+
+<script src="https://cdn.jsdelivr.net/npm/jsrender@1.0.16/jsrender.min.js"></script>
+<script type="text/javascript" src="page.js"></script>
+
+<script>
+/* eslint-disable no-unused-vars, no-undef */
+const page = new Page();
+// const ginko4 = new Ginko('ginko_4', 'Carmes');
+// 
+// const velo6t = new Velocite('velo_11', 'Besancon', Secrets.velocite.id);
+
+</script>
+</body>
+</html>
