@@ -45,7 +45,7 @@ class Page {
         window.fetch('../noco-small.json')
         .then(response => response.json())
         .then(nd => {
-            // restore objects
+            // hydrate database
             Object.keys(nd).forEach(itm => {
             if (itm.length === 2) {
                 nd[itm] = nd[itm].split(' ').reduce((acc, k, i) => { acc[k] = i; return acc }, {})
@@ -57,70 +57,122 @@ class Page {
             }
             })
             this.nd = nd
+            this.context = {
+                page: 'root',
+            }
 
+            // init event handlers
             const srctxt = document.getElementById('srctxt')
-            srctxt.addEventListener("input", _=> this.updateSearch(srctxt.value, srcre.checked))
+            srctxt.addEventListener("input", _=> this.updateSearch())
             const srcre = document.getElementById('srcre')
-            srcre.addEventListener("change", _=> this.updateSearch(srctxt.value, srcre.checked))
+            srcre.addEventListener("change", _=> this.updateSearch())
 
-            this.updateSearch()
+            // init router
+            this.router = new Navigo('/', { hash: true })
+            this.router.on('/', (rnfo) => {
+                this.context = {
+                    page: 'root',
+                }
+                this.updateSearch()
+            })
+            this.router.on('/partner/:partner', (rnfo) => {
+                this.context = {
+                    page: 'partner',
+                    partner_name: rnfo.data.partner
+                }
+                this.updateSearch()
+            })
+            this.router.on('/family/:family', (rnfo) => {
+                this.context = {
+                    page: 'family',
+                    family_key: rnfo.data.family
+                }
+                this.updateSearch()
+            })
+            this.router.resolve()
         })
         .catch(err => {
             console.log('error: ' + err);
         })
     }
 
-    updateSearch(search='', isre=false) {
+    updateSearch() {
+        // read search params
+        const search = document.getElementById('srctxt').value
+        const isre = document.getElementById('srcre').checked
+
+        console.log('updatesearch page', this.context)
         const nd = this.nd
         let matchedShows
         if (isre) {
             const searchRE = new RegExp(search, 'i')
             matchedShows = nd.shows.filter(sh=>sh[nd.SH.show_resume].match(searchRE) || sh[nd.SH.show_TT].match(searchRE))
         } else {
-            matchedShows = nd.shows.filter(sh=>sh[nd.SH.show_resume].indexOf(search)!=-1 || sh[nd.SH.show_TT].indexOf(search)!=-1)            
+            matchedShows = nd.shows.filter(sh=>sh[nd.SH.show_resume].indexOf(search)!=-1 || sh[nd.SH.show_TT].indexOf(search)!=-1)
         }
-        this.genAllPartners(matchedShows)
+
+        document.getElementById('partners').innerHTML = ''
+        document.getElementById('families').innerHTML = ''
+        document.getElementById('shows').innerHTML = ''
+
+        switch (this.context.page) {
+            case 'root':
+                this.listPartners(matchedShows)
+                break;
+            case 'partner':
+                this.listFamiliesOfPartner(matchedShows, this.context.partner_name)
+                break;
+            case 'family':
+                this.listShowsOfFamily(matchedShows, this.context.family_key)
+                break;
+        }
     }
 
-    genAllPartners (matchedShows) {
+    listPartners (matchedShows) {
         const nd = this.nd
-        document.getElementById('partners').innerHTML = ''
         const uniqueFamilies = [...new Set(matchedShows.map(sh => sh[nd.SH.id_family]))]
-        const uniquePartners = [...new Set (uniqueFamilies.map(fam_id => nd.families.find(fam => fam[nd.FA.id_family] === fam_id)[nd.FA.id_partner]))]
+        const uniquePartners = [...new Set(uniqueFamilies.map(fam_id => nd.families.find(fam => fam[nd.FA.id_family] === fam_id)[nd.FA.id_partner]))]
 
         const partners = uniquePartners.map(pid => nd.partners.find(pa => pa[nd.PA.id_partner] === pid))
             .sort((a, b) => a[nd.PA.partner_name].localeCompare(b[nd.PA.partner_name]))
         
-        partners.forEach(partnerdata => this.genPartner('/', partnerdata, matchedShows))
-
+        partners.forEach(partner => this.renderPartner('#', matchedShows, partner))
+        this.router.updatePageLinks()
     }
 
-    genPartner (url, partnerdata, matchedShows) {
+    renderPartner (url, matchedShows, partner) {
         const nd = this.nd
-        const id_partner = partnerdata[nd.PA.id_partner]
+        const id_partner = partner[nd.PA.id_partner]
         const shows = matchedShows.filter(sh =>
             nd.families.find(fa => fa[nd.FA.id_family] === sh[nd.SH.id_family])[nd.FA.id_partner] === id_partner
         )
-        let fams = [...new Set(shows.map(sh => sh[nd.SH.id_family]))]
-        fams = fams.map(faid => nd.families.find(fa => fa[nd.FA.id_family] === faid))
-            .sort((a, b) => a[nd.FA.family_TT].localeCompare(b[nd.FA.family_TT]))
-        // const fams = nd.families.filter(fa => fa[nd.FA.id_partner] === id_partner)
-        //     .sort((a, b) => a[nd.FA.family_TT].localeCompare(b[nd.FA.family_TT]))
-        // const famids = fams.map(fa => fa[nd.FA.id_family])
-        // const shows = matchedShows.filter(sh => famids.indexOf(sh[nd.SH.id_family]) >= 0)
+        const uniqueFamilies = [...new Set(shows.map(sh => sh[nd.SH.id_family]))]
+        const fams = uniqueFamilies.map(faid => nd.families.find(fa => fa[nd.FA.id_family] === faid))
         const dur = this.formatDuration(this.totalDuration(shows))
-        const url2 = `${url}${partnerdata[nd.PA.partner_shortname]}/`
-        const icn = `${nocomedia}partner_160x90/${partnerdata[nd.PA.partner_key].toLowerCase()}.jpg`
+        const url2 = `${url}/partner/${partner[nd.PA.partner_shortname]}`
+        const icn = `${nocomedia}partner_160x90/${partner[nd.PA.partner_key].toLowerCase()}.jpg`
 
         const tmpl = jsrender.templates("#tplPartners");
-        const partObj = this.getObj(this.nd.PA, partnerdata)
-        const tpldata = {part: partObj, fams, shows, dur, icn, url2}
+        // const partObj = this.getObj(this.nd.PA, partner)
+        const tpldata = {nd, partner, fams, shows, dur, icn, url2}
         const html = tmpl(tpldata)
         document.getElementById('partners').innerHTML += html
 
-        fams.forEach(family => {
-            this.renderFamily(url, partnerdata, family, shows)
-        })
+        // fams.forEach(family => {
+        //     this.renderFamily(url, partnerdata, family, shows)
+        // })
+    }
+
+    listFamiliesOfPartner (matchedShows, partner_name) {
+        const nd = this.nd
+        const partner = nd.partners.find(pa => pa[nd.PA.partner_name] === partner_name)
+        const uniqueFamilies = [...new Set(matchedShows.map(sh => sh[nd.SH.id_family]))]
+        const families = uniqueFamilies.map(fid => nd.families.find(fa => fa[nd.FA.id_family] === fid))
+            .filter(fa => fa[nd.FA.id_partner] === partner[nd.PA.id_partner])
+            .sort((a, b) => a[nd.FA.family_TT].localeCompare(b[nd.FA.family_TT]))
+        
+        families.forEach(family => this.renderFamily('#', partner, family, matchedShows))
+        this.router.updatePageLinks()
     }
 
     renderFamily(url, partner, family, matchedShows) {
@@ -130,22 +182,24 @@ class Page {
         const shows = matchedShows.filter(sh => sh[nd.SH.id_family] === family[nd.FA.id_family])
         const dur = this.formatDuration(this.totalDuration(shows))
 
-        const url2 = `${url}${family[nd.FA.family_key]}/`
+        const url2 = `${url}/family/${family[nd.FA.family_key]}`
         const icn = family[nd.FA.icon_1024x576] ? ''
             : (`${nocomedia}family_160x90/${partner[nd.PA.partner_key].toLowerCase()}` +
             `/${family[nd.FA.family_key].toLowerCase()}.jpg`)
 
-
         const tpldata = {nd, fam: family, theme, type, shows, dur, icn, url2}
         const tmpl = jsrender.templates("#tplFamily");
         const html = tmpl(tpldata)
-        document.getElementById('partners').innerHTML += html
+        document.getElementById('families').innerHTML += html
+    }
 
-        if (shows.length < 8) {
-            shows.forEach(show => {
-                this.renderShow(show, partner, family)
-            })
-        }
+    listShowsOfFamily (matchedShows, family_key) {
+        const nd = this.nd
+        const family = nd.families.find(fa => fa[nd.FA.family_key] === family_key)
+        const partner = nd.partners.find(pa => pa[nd.PA.id_partner] === family[nd.FA.id_partner])
+        const shows = matchedShows.filter(sh => sh[nd.SH.id_family] === family[nd.FA.id_family])
+        shows.forEach(show => this.renderShow(show, partner, family))
+        this.router.updatePageLinks()
     }
 
     renderShow(show, partner, family) {
@@ -242,16 +296,16 @@ class Page {
         const tpldata = {nd, show, broadcastDate, dur, mos, nocourl, scr, showKey, show_resume, sn, title}
         const tmpl = jsrender.templates("#tplShow");
         const html = tmpl(tpldata)
-        document.getElementById('partners').innerHTML += html
+        document.getElementById('shows').innerHTML += html
     }
 
-    getObj (def, data) {
-        const obj = {}
-        for (const i in def) {
-            obj[i] = data[def[i]]
-        }
-        return obj
-    }
+    // getObj (def, data) {
+    //     const obj = {}
+    //     for (const i in def) {
+    //         obj[i] = data[def[i]]
+    //     }
+    //     return obj
+    // }
 
     tmp () {
         const nd = this.nd
