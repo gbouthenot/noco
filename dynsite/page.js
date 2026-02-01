@@ -3,6 +3,8 @@ class Page {
 
     constructor () {
         this.nd = {}
+        this.url = '#'
+
         this.init()
     }
 
@@ -138,12 +140,13 @@ class Page {
         const partners = uniquePartners.map(pid => nd.partners.find(pa => pa[nd.PA.id_partner] === pid))
             .sort((a, b) => a[nd.PA.partner_name].localeCompare(b[nd.PA.partner_name]))
         
-        partners.forEach(partner => this.renderPartner('#', matchedShows, partner))
+        partners.forEach(partner => this.renderPartner(true, matchedShows, partner))
         this.router.updatePageLinks()
     }
 
-    renderPartner (url, matchedShows, partner) {
+    renderPartner (isList, matchedShows, partner) {
         const nd = this.nd
+        const url = this.url
         const id_partner = partner[nd.PA.id_partner]
         const shows = matchedShows.filter(sh =>
             nd.families.find(fa => fa[nd.FA.id_family] === sh[nd.SH.id_family])[nd.FA.id_partner] === id_partner
@@ -151,7 +154,7 @@ class Page {
         const uniqueFamilies = [...new Set(shows.map(sh => sh[nd.SH.id_family]))]
         const fams = uniqueFamilies.map(faid => nd.families.find(fa => fa[nd.FA.id_family] === faid))
         const dur = this.formatDuration(this.totalDuration(shows))
-        const url2 = `${url}/partner/${partner[nd.PA.partner_shortname]}`
+        const url2 = (isList) ? (`${url}/partner/${partner[nd.PA.partner_shortname]}`) : (`${url}/`)
         const icn = `${nocomedia}partner_160x90/${partner[nd.PA.partner_key].toLowerCase()}.jpg`
 
         const tmpl = jsrender.templates("#tplPartners");
@@ -159,10 +162,6 @@ class Page {
         const tpldata = {nd, partner, fams, shows, dur, icn, url2}
         const html = tmpl(tpldata)
         document.getElementById('partners').innerHTML += html
-
-        // fams.forEach(family => {
-        //     this.renderFamily(url, partnerdata, family, shows)
-        // })
     }
 
     listFamiliesOfPartner (matchedShows, partner_name) {
@@ -173,18 +172,20 @@ class Page {
             .filter(fa => fa[nd.FA.id_partner] === partner[nd.PA.id_partner])
             .sort((a, b) => a[nd.FA.family_TT].localeCompare(b[nd.FA.family_TT]))
         
-        families.forEach(family => this.renderFamily('#', partner, family, matchedShows))
+        this.renderPartner(false, matchedShows, partner)
+        families.forEach(family => this.renderFamily(true, matchedShows, partner, family))
         this.router.updatePageLinks()
     }
 
-    renderFamily(url, partner, family, matchedShows) {
+    renderFamily(isList, matchedShows, partner, family) {
         const nd = this.nd
+        const url = this.url
         const theme = nd.themes.find(th => th[nd.TH.id_theme] === family[nd.FA.id_theme])
         const type = nd.types.find(ty => ty[nd.TY.id_type] === family[nd.FA.id_type])
         const shows = matchedShows.filter(sh => sh[nd.SH.id_family] === family[nd.FA.id_family])
         const dur = this.formatDuration(this.totalDuration(shows))
 
-        const url2 = `${url}/family/${family[nd.FA.family_key]}/1`
+        const url2 = (isList) ? (`${url}/family/${family[nd.FA.family_key]}/1`) : ((`${url}/partner/${partner[nd.PA.partner_shortname]}`))
         const icn = family[nd.FA.icon_1024x576] ? ''
             : (`${nocomedia}family_160x90/${partner[nd.PA.partner_key].toLowerCase()}` +
             `/${family[nd.FA.family_key].toLowerCase()}.jpg`)
@@ -205,12 +206,15 @@ class Page {
         const shows = matchedShows.filter(sh => sh[nd.SH.id_family] === family[nd.FA.id_family])
         const url = `#/family/${family[nd.FA.family_key]}/`
 
+        this.renderPartner(false, matchedShows, partner)
+        this.renderFamily(false, matchedShows, partner, family)
+
         const nbshows = shows.length
         const perpage = 10
         const nbpages = Math.ceil(nbshows / perpage)
         this.renderPagination({url, pagenb, nbpages})
         for (let i = (pagenb - 1) * perpage; i < Math.min(nbshows, pagenb * perpage); i++) {
-            this.renderShow(shows[i], partner, family)
+            this.renderShow(true, shows[i], partner, family)
         }
         this.router.updatePageLinks()
     }
@@ -230,7 +234,7 @@ class Page {
         document.getElementById('shows').innerHTML += html
     }
 
-    renderShow(show, partner, family) {
+    renderShow(isList, show, partner, family) {
         const nd = this.nd
 
         const dur = this.formatDuration(show[nd.SH.duration_ms])
