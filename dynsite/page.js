@@ -68,6 +68,8 @@ class Page {
             srctxt.addEventListener("input", _=> this.updateSearch())
             const srcre = document.getElementById('srcre')
             srcre.addEventListener("change", _=> this.updateSearch())
+            const srccs = document.getElementById('srccs')
+            srccs.addEventListener("change", _=> this.updateSearch())
 
             // init router
             this.router = new Navigo('/', { hash: true })
@@ -104,15 +106,21 @@ class Page {
         // read search params
         const search = document.getElementById('srctxt').value
         const isre = document.getElementById('srcre').checked
+        const iscs = document.getElementById('srccs').checked
 
         // console.log('updatesearch page', this.context)
         const nd = this.nd
         let matchedShows
         if (isre) {
-            const searchRE = new RegExp(search, 'i')
+            const searchRE = new RegExp(search, (iscs) ? ('i') : (''))
             matchedShows = nd.shows.filter(sh=>sh[nd.SH.show_resume].match(searchRE) || sh[nd.SH.show_TT].match(searchRE))
         } else {
-            matchedShows = nd.shows.filter(sh=>sh[nd.SH.show_resume].indexOf(search)!=-1 || sh[nd.SH.show_TT].indexOf(search)!=-1)
+            if (iscs) {
+                matchedShows = nd.shows.filter(sh=>sh[nd.SH.show_resume].toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) != -1 || sh[nd.SH.show_TT].toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) != -1)
+            } else
+            {
+                matchedShows = nd.shows.filter(sh=>sh[nd.SH.show_resume].indexOf(search) != -1 || sh[nd.SH.show_TT].indexOf(search) != -1)
+            }
         }
 
         document.getElementById('partners').innerHTML = ''
@@ -208,10 +216,16 @@ class Page {
 
         this.renderPartner(false, matchedShows, partner)
         this.renderFamily(false, matchedShows, partner, family)
+        if (shows.length === 0) {
+            document.getElementById('shows').innerHTML += "No data"
+            return
+        }
 
         const nbshows = shows.length
         const perpage = 10
         const nbpages = Math.ceil(nbshows / perpage)
+        pagenb = Math.max(pagenb, 1)
+        pagenb = Math.min(pagenb, nbpages)
         this.renderPagination({url, pagenb, nbpages})
         for (let i = (pagenb - 1) * perpage; i < Math.min(nbshows, pagenb * perpage); i++) {
             this.renderShow(true, shows[i], partner, family)
