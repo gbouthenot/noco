@@ -29,7 +29,7 @@ ul.destinations { list-style:none; margin-top:0; padding-left:1em; }
     <div id="families"></div>
     <hr>
     <h3>Shows:</h3>
-    <div id="showspp"></div>
+    <div id="shows"></div>
     <hr>
 
 <!-- [ TEMPLATES -->
@@ -93,6 +93,18 @@ ul.destinations { list-style:none; margin-top:0; padding-left:1em; }
                 {{>dur}} -- <a href="{{>nocourl}}">noco</a>
             </div>
         </div>
+    </div>
+</script>
+
+<script type="text/html" id="tplPaginator">
+    <div class="paginator">
+        {{if prevpage}}
+            <a href="{{>prevpage}}"><<<</a>
+        {{/if}}
+        Page {{>pagenb}} of {{>nbpages}}
+        {{if nextpage}}
+            <a href="{{>nextpage}}">>>></a>
+        {{/if}}
     </div>
 </script>
 

@@ -82,10 +82,11 @@ class Page {
                 }
                 this.updateSearch()
             })
-            this.router.on('/family/:family', (rnfo) => {
+            this.router.on('/family/:family/:pagenb', (rnfo) => {
                 this.context = {
                     page: 'family',
-                    family_key: rnfo.data.family
+                    family_key: rnfo.data.family,
+                    pagenb: parseInt(rnfo.data.pagenb, 10)
                 }
                 this.updateSearch()
             })
@@ -93,6 +94,7 @@ class Page {
         })
         .catch(err => {
             console.log('error: ' + err);
+            throw(err)
         })
     }
 
@@ -101,7 +103,7 @@ class Page {
         const search = document.getElementById('srctxt').value
         const isre = document.getElementById('srcre').checked
 
-        console.log('updatesearch page', this.context)
+        // console.log('updatesearch page', this.context)
         const nd = this.nd
         let matchedShows
         if (isre) {
@@ -123,7 +125,7 @@ class Page {
                 this.listFamiliesOfPartner(matchedShows, this.context.partner_name)
                 break;
             case 'family':
-                this.listShowsOfFamily(matchedShows, this.context.family_key)
+                this.listShowsOfFamily(matchedShows, this.context.family_key, this.context.pagenb)
                 break;
         }
     }
@@ -182,7 +184,7 @@ class Page {
         const shows = matchedShows.filter(sh => sh[nd.SH.id_family] === family[nd.FA.id_family])
         const dur = this.formatDuration(this.totalDuration(shows))
 
-        const url2 = `${url}/family/${family[nd.FA.family_key]}`
+        const url2 = `${url}/family/${family[nd.FA.family_key]}/1`
         const icn = family[nd.FA.icon_1024x576] ? ''
             : (`${nocomedia}family_160x90/${partner[nd.PA.partner_key].toLowerCase()}` +
             `/${family[nd.FA.family_key].toLowerCase()}.jpg`)
@@ -193,13 +195,39 @@ class Page {
         document.getElementById('families').innerHTML += html
     }
 
-    listShowsOfFamily (matchedShows, family_key) {
+    listShowsOfFamily (matchedShows, family_key, pagenb) {
+        if (typeof(pagenb) === 'undefined' || pagenb === 'undefined') {
+             pagenb = 1
+        }
         const nd = this.nd
         const family = nd.families.find(fa => fa[nd.FA.family_key] === family_key)
         const partner = nd.partners.find(pa => pa[nd.PA.id_partner] === family[nd.FA.id_partner])
         const shows = matchedShows.filter(sh => sh[nd.SH.id_family] === family[nd.FA.id_family])
-        shows.forEach(show => this.renderShow(show, partner, family))
+        const url = `#/family/${family[nd.FA.family_key]}/`
+
+        const nbshows = shows.length
+        const perpage = 10
+        const nbpages = Math.ceil(nbshows / perpage)
+        this.renderPagination({url, pagenb, nbpages})
+        for (let i = (pagenb - 1) * perpage; i < Math.min(nbshows, pagenb * perpage); i++) {
+            this.renderShow(shows[i], partner, family)
+        }
         this.router.updatePageLinks()
+    }
+
+    renderPagination(pagedata) {
+        if (pagedata.nbpages === 1) {
+            return
+        }
+        if (pagedata.pagenb > 1) {
+            pagedata.prevpage = `${pagedata.url}${pagedata.pagenb - 1}`
+        }
+        if (pagedata.pagenb < pagedata.nbpages) {
+            pagedata.nextpage = `${pagedata.url}${pagedata.pagenb + 1}`
+        }
+        const tmpl = jsrender.templates("#tplPaginator");
+        const html = tmpl(pagedata)
+        document.getElementById('shows').innerHTML += html
     }
 
     renderShow(show, partner, family) {
