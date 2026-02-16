@@ -11,5 +11,10 @@
   "dependencies": {
     "node-fetch": "^2.1.2",
     "remove-accents-diacritics": "^1.0.2"
+  },
+  "devDependencies": {
+    "minimist": "^1.2.5",
+    "standard": "^16.0.3",
+    "standard-engine": "^14.0.1"
   }
 }
