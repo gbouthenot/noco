@@ -70,7 +70,7 @@ ul.destinations { list-style:none; margin-top:0; padding-left:1em; }
 <script type="text/html" id="tplShow">
     <div class='show' data-id='{{>show[nd.SH.id_show]}}'>
         <div class='show-mos' style='display:none;'>
-            <div class='mos' style='background-image:url("${mos}");'></div>
+            <div class='mos' style='background-image:url("{{>mos}}");'></div>
             <div class='prog'></div>
         </div>
         <div class='show-scr'>
@@ -116,6 +116,7 @@ ul.destinations { list-style:none; margin-top:0; padding-left:1em; }
 <script src="//cdn.jsdelivr.net/npm/jsrender@1.0.16/jsrender.min.js"></script>
 <script src="//unpkg.com/navigo"></script>
 <script type="text/javascript" src="page.js"></script>
+<script type="text/javascript" src="../page.js"></script>
 
 <script>
 /* eslint-disable no-unused-vars, no-undef */
