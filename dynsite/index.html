@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -17,7 +18,7 @@ ul.destinations { list-style:none; margin-top:0; padding-left:1em; }
 <body>
     <div id="searchbox">
         <form>
-            search: <input id="srctxt" type="text" size="30" value="lay" />
+            search: <input id="srctxt" type="text" size="30" value="" />
             a=A: <input id="srccs" type="checkbox" checked />
             regex: <input id="srcre" type="checkbox" />
         </form>
@@ -81,11 +82,11 @@ ul.destinations { list-style:none; margin-top:0; padding-left:1em; }
             <!--<div class='show-idx'>#${i + 1}</div>-->
             <div class='show-name'>
                 <div class='num'>{{>sn}}</div>
-                <div class='title'>{{>title}}</div>
+                <div class='title'>{{:title}}</div>
                 <div class='key'>{{>showKey}}</div>
             </div>
                 {{if show_resume}}
-                    <div class='show-resume'>{{>show_resume}}</div>
+                    <div class='show-resume'>{{:show_resume}}</div>
                 {{/if}}
             <div class='show-stats'>
                 {{if broadcastDate}}

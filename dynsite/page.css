@@ -1,5 +1,7 @@
 body { margin:0; }
 
+input.error { background:#fbb; }
+
 /* recap */
 .recap .access { display:inline; }
 .recap .partner { display:inline; } .recap .part-name, .recap .part-stats, .recap .part-resume, .recap .part-subtitle { display:none; }

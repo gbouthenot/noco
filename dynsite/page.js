@@ -110,17 +110,22 @@ class Page {
 
         // console.log('updatesearch page', this.context)
         const nd = this.nd
-        let matchedShows
-        if (isre) {
-            const searchRE = new RegExp(search, (iscs) ? ('i') : (''))
-            matchedShows = nd.shows.filter(sh=>sh[nd.SH.show_resume].match(searchRE) || sh[nd.SH.show_TT].match(searchRE))
-        } else {
-            if (iscs) {
-                matchedShows = nd.shows.filter(sh=>sh[nd.SH.show_resume].toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) != -1 || sh[nd.SH.show_TT].toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) != -1)
-            } else
-            {
-                matchedShows = nd.shows.filter(sh=>sh[nd.SH.show_resume].indexOf(search) != -1 || sh[nd.SH.show_TT].indexOf(search) != -1)
+        let matchedShows = []
+        try {
+            document.getElementById('srctxt').classList.remove('error')
+            if (isre) {
+                const searchRE = new RegExp(search, (iscs) ? ('ig') : ('g'))
+                matchedShows = nd.shows.filter(sh=>sh[nd.SH.show_resume].match(searchRE) || sh[nd.SH.show_TT].match(searchRE))
+            } else {
+                if (iscs) {
+                    matchedShows = nd.shows.filter(sh=>sh[nd.SH.show_resume].toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) != -1 || sh[nd.SH.show_TT].toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) != -1)
+                } else
+                {
+                    matchedShows = nd.shows.filter(sh=>sh[nd.SH.show_resume].indexOf(search) != -1 || sh[nd.SH.show_TT].indexOf(search) != -1)
+                }
             }
+        } catch (e) {
+            document.getElementById('srctxt').classList.add('error')
         }
 
         document.getElementById('partners').innerHTML = ''
@@ -147,7 +152,7 @@ class Page {
 
         const partners = uniquePartners.map(pid => nd.partners.find(pa => pa[nd.PA.id_partner] === pid))
             .sort((a, b) => a[nd.PA.partner_name].localeCompare(b[nd.PA.partner_name]))
-        
+
         partners.forEach(partner => this.renderPartner(true, matchedShows, partner))
         this.router.updatePageLinks()
     }
@@ -179,7 +184,7 @@ class Page {
         const families = uniqueFamilies.map(fid => nd.families.find(fa => fa[nd.FA.id_family] === fid))
             .filter(fa => fa[nd.FA.id_partner] === partner[nd.PA.id_partner])
             .sort((a, b) => a[nd.FA.family_TT].localeCompare(b[nd.FA.family_TT]))
-        
+
         this.renderPartner(false, matchedShows, partner)
         families.forEach(family => this.renderFamily(true, matchedShows, partner, family))
         this.router.updatePageLinks()
@@ -248,6 +253,24 @@ class Page {
         document.getElementById('shows').innerHTML += html
     }
 
+    escapeHtml (unsafe) {
+      return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    highlight(text) {
+        const search = document.getElementById('srctxt').value
+        const isre = document.getElementById('srcre').checked
+        const iscs = document.getElementById('srccs').checked
+        const text2 = this.escapeHtml(text)
+        const searchRE = new RegExp((isre) ? (search) : (RegExp.escape(search)), (iscs) ? ('ig') : ('g'))
+       return text2.replaceAll(searchRE, a => "<mark>" + a + "</mark>")
+    }
+
     renderShow(isList, show, partner, family) {
         const nd = this.nd
 
@@ -307,7 +330,7 @@ class Page {
         }
 
         if (showtt) {
-            title.push(showtt)
+            title.push(this.highlight(showtt))
         }
         title = title.join(' - ')
 
@@ -331,7 +354,8 @@ class Page {
             }
         }
 
-        const show_resume = show[nd.SH.show_resume].replace(/\n/g, '\n    ')
+        const show_resume = this.highlight(show[nd.SH.show_resume].replace(/\n/g, '\n    '))
+
         let mos = show[nd.SH.mosaique]
         if (mos) {
             mos = `${mos}${'73a1'.slice(mos.length - 30)}`
