@@ -82,15 +82,15 @@ class Page {
             this.router.on('/partner/:partner', (rnfo) => {
                 this.context = {
                     page: 'partner',
-                    partner_name: rnfo.data.partner
+                    partner_shortname: decodeURIComponent(rnfo.data.partner)
                 }
                 this.updateSearch()
             })
             this.router.on('/family/:family/:pagenb', (rnfo) => {
                 this.context = {
                     page: 'family',
-                    family_key: rnfo.data.family,
-                    pagenb: parseInt(rnfo.data.pagenb, 10)
+                    family_key: decodeURIComponent(rnfo.data.family),
+                    pagenb: parseInt(decodeURIComponent(rnfo.data.pagenb), 10)
                 }
                 this.updateSearch()
             })
@@ -137,7 +137,7 @@ class Page {
                 this.listPartners(matchedShows)
                 break;
             case 'partner':
-                this.listFamiliesOfPartner(matchedShows, this.context.partner_name)
+                this.listFamiliesOfPartner(matchedShows, this.context.partner_shortname)
                 break;
             case 'family':
                 this.listShowsOfFamily(matchedShows, this.context.family_key, this.context.pagenb)
@@ -177,12 +177,22 @@ class Page {
         document.getElementById('partners').innerHTML += html
     }
 
-    listFamiliesOfPartner (matchedShows, partner_name) {
+    listFamiliesOfPartner (matchedShows, partner_shortname) {
         const nd = this.nd
-        const partner = nd.partners.find(pa => pa[nd.PA.partner_name] === partner_name)
+        const partner = nd.partners.find(pa => pa[nd.PA.partner_shortname] === partner_shortname)
+        if (!partner) {
+            console.error("ERROR", partner_shortname)
+            return
+        }
         const uniqueFamilies = [...new Set(matchedShows.map(sh => sh[nd.SH.id_family]))]
-        const families = uniqueFamilies.map(fid => nd.families.find(fa => fa[nd.FA.id_family] === fid))
-            .filter(fa => fa[nd.FA.id_partner] === partner[nd.PA.id_partner])
+
+        let families = uniqueFamilies.map(fid => nd.families.find(fa => fa[nd.FA.id_family] === fid))
+        if (!families) {
+            console.error("ERROR families")
+            return
+        }
+        console.log(partner)
+        families = families.filter(fa => fa[nd.FA.id_partner] === partner[nd.PA.id_partner])
             .sort((a, b) => a[nd.FA.family_TT].localeCompare(b[nd.FA.family_TT]))
 
         this.renderPartner(false, matchedShows, partner)
